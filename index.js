@@ -1,6 +1,8 @@
 const urlMeilleursFilms = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score,-votes';
 const urlFilmsMieuxNotesPage1 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score&page=1';
 const urlFilmsMieuxNotesPage2 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score&page=2';
+const urlFilmsMysteryPage1 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Mystery&page=1'
+const urlFilmsMysteryPage2 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Mystery&page=2'
 const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
 
 
@@ -35,59 +37,106 @@ async function afficherMeilleurFilm() {
   
   afficherMeilleurFilm();
 
-  async function afficherFilmsMieuxNotes() {
-    try {
+async function afficherFilmsMieuxNotes() {
+  try {
 
-      // Etape 1 : récupérer la liste tirée et préparer les données
-      const reponseFilmsMieuxNotesPage1 = await fetch(urlFilmsMieuxNotesPage1)
-      if (!reponseFilmsMieuxNotesPage1.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 1')
-      const dataListeFilmsMieuxNotesPage1 = await reponseFilmsMieuxNotesPage1.json();
+    // Etape 1 : récupérer la liste tirée et préparer les données
+    const reponseFilmsMieuxNotesPage1 = await fetch(urlFilmsMieuxNotesPage1)
+    if (!reponseFilmsMieuxNotesPage1.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 1')
+    const dataListeFilmsMieuxNotesPage1 = await reponseFilmsMieuxNotesPage1.json();
 
-      const reponseFilmsMieuxNotesPage2 = await fetch(urlFilmsMieuxNotesPage2)
-      if (!reponseFilmsMieuxNotesPage2.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 2')
-      const dataListeFilmsMieuxNotesPage2 = await reponseFilmsMieuxNotesPage2.json();
-
-
-      // Etape 2 : réduire la liste à 6 films
-
-      const ListeFilmsMieuxNotesPage1 = dataListeFilmsMieuxNotesPage1.results;
-      const ListeFilmsMieuxNotesPage2 = dataListeFilmsMieuxNotesPage2.results[0]
-
-      const ListeFilmsMieuxNotes = ListeFilmsMieuxNotesPage1.concat(ListeFilmsMieuxNotesPage2);
-
-      console.log(ListeFilmsMieuxNotes)
-
-      // Etape 3 : affichage dans lee HTML
-
-      for (let i =0; i < ListeFilmsMieuxNotes.length; i++){
-        // récupérer les détails du film
-        const film = ListeFilmsMieuxNotes[i]
-        const urlfilm = film.url
-        const reponseUrlFilm = await fetch(urlfilm);
-        if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des films les mieux notés');
-
-        const filmDetail = await reponseUrlFilm.json();
+    const reponseFilmsMieuxNotesPage2 = await fetch(urlFilmsMieuxNotesPage2)
+    if (!reponseFilmsMieuxNotesPage2.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 2')
+    const dataListeFilmsMieuxNotesPage2 = await reponseFilmsMieuxNotesPage2.json();
 
 
-        const elementTitre = document.getElementById("titre-film" + i);
-        const elementImage = document.getElementById("img-film" + i);
-        const elementDescription = document.getElementById("description_film" + i);
+    // Etape 2 : réduire la liste à 6 films
 
-        elementTitre.innerText = film.title;
-        elementImage.src = film.image_url;
-        elementDescription.innerText = filmDetail.description;
-      }
+    const ListeFilmsMieuxNotesPage1 = dataListeFilmsMieuxNotesPage1.results;
+    const ListeFilmsMieuxNotesPage2 = dataListeFilmsMieuxNotesPage2.results[0]
+
+    const ListeFilmsMieuxNotes = ListeFilmsMieuxNotesPage1.concat(ListeFilmsMieuxNotesPage2);
+
+    console.log(ListeFilmsMieuxNotes)
+
+    // Etape 3 : affichage dans lee HTML
+
+    for (let i =0; i < ListeFilmsMieuxNotes.length; i++){
+      // récupérer les détails du film
+      const film = ListeFilmsMieuxNotes[i]
+      const urlfilm = film.url
+      const reponseUrlFilm = await fetch(urlfilm);
+      if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des films les mieux notés');
+
+      const filmDetail = await reponseUrlFilm.json();
 
 
+      const elementTitre = document.getElementById("titre-film" + i);
+      const elementImage = document.getElementById("img-film" + i);
+      const elementDescription = document.getElementById("description_film" + i);
 
-    } catch (error) {
-      console.error("Erreur Fetch :", error);
+      elementTitre.innerText = film.title;
+      elementImage.src = film.image_url;
+      elementDescription.innerText = filmDetail.description;
     }
-    
+
+
+
+  } catch (error) {
+    console.error("Erreur Fetch :", error);
   }
+  
+}
 
   afficherFilmsMieuxNotes()
 
+async function afficherFilmsMystery() {
+  try {
+
+    // Etape 1 : récupérer la liste tirée et préparer les données
+    const reponseMysteryPage1 = await fetch(urlFilmsMysteryPage1)
+    if (!reponseMysteryPage1.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 1')
+    const dataListeMysteryPage1 = await reponseMysteryPage1.json();
+
+    const reponseMysteryPage2 = await fetch(urlFilmsMysteryPage2)
+    if (!reponseMysteryPage2.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 2')
+    const dataListeMysteryPage2 = await reponseMysteryPage2.json();
+
+
+    // Etape 2 : réduire la liste à 6 films
+
+    const ListeMysteryPage1 = dataListeMysteryPage1.results;
+    const ListeMysteryPage2 = dataListeMysteryPage2.results[0]
+
+    const ListeMystery = ListeMysteryPage1.concat(ListeMysteryPage2);
+
+    // Etape 3 : affichage dans le HTML
+
+    for (let i =0; i < ListeMystery.length; i++){
+      // récupérer les détails du film
+      const film = ListeMystery[i]
+      const urlfilm = film.url
+      const reponseUrlFilm = await fetch(urlfilm);
+      if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des films Mystery');
+
+      const filmDetail = await reponseUrlFilm.json();
+
+      const elementTitre = document.getElementById("titre-film-mystery-" + i);
+      const elementImage = document.getElementById("img-film-mystery-" + i);
+      const elementDescription = document.getElementById("description_film-mystery-" + i);
+
+      elementTitre.innerText = film.title;
+      elementImage.src = film.image_url;
+      elementDescription.innerText = filmDetail.description;
+    }
+
+  } catch (error) {
+    console.error("Erreur Fetch :", error);
+  }
+    
+  }
+
+  afficherFilmsMystery();
 
 
 
