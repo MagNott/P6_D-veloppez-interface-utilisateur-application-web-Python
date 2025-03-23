@@ -1,4 +1,6 @@
 const urlMeilleursFilms = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score,-votes';
+const urlFilmsMieuxNotesPage1 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score&page=1';
+const urlFilmsMieuxNotesPage2 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score&page=2';
 const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
 
 
@@ -33,7 +35,58 @@ async function afficherMeilleurFilm() {
   
   afficherMeilleurFilm();
 
+  async function afficherFilmsMieuxNotes() {
+    try {
 
+      // Etape 1 : récupérer la liste tirée et préparer les données
+      const reponseFilmsMieuxNotesPage1 = await fetch(urlFilmsMieuxNotesPage1)
+      if (!reponseFilmsMieuxNotesPage1.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 1')
+      const dataListeFilmsMieuxNotesPage1 = await reponseFilmsMieuxNotesPage1.json();
+
+      const reponseFilmsMieuxNotesPage2 = await fetch(urlFilmsMieuxNotesPage2)
+      if (!reponseFilmsMieuxNotesPage2.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 2')
+      const dataListeFilmsMieuxNotesPage2 = await reponseFilmsMieuxNotesPage2.json();
+
+
+      // Etape 2 : réduire la liste à 6 films
+
+      const ListeFilmsMieuxNotesPage1 = dataListeFilmsMieuxNotesPage1.results;
+      const ListeFilmsMieuxNotesPage2 = dataListeFilmsMieuxNotesPage2.results[0]
+
+      const ListeFilmsMieuxNotes = ListeFilmsMieuxNotesPage1.concat(ListeFilmsMieuxNotesPage2);
+
+      console.log(ListeFilmsMieuxNotes)
+
+      // Etape 3 : affichage dans lee HTML
+
+      for (let i =0; i < ListeFilmsMieuxNotes.length; i++){
+        // récupérer les détails du film
+        const film = ListeFilmsMieuxNotes[i]
+        const urlfilm = film.url
+        const reponseUrlFilm = await fetch(urlfilm);
+        if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des films les mieux notés');
+
+        const filmDetail = await reponseUrlFilm.json();
+
+
+        const elementTitre = document.getElementById("titre-film" + i);
+        const elementImage = document.getElementById("img-film" + i);
+        const elementDescription = document.getElementById("description_film" + i);
+
+        elementTitre.innerText = film.title;
+        elementImage.src = film.image_url;
+        elementDescription.innerText = filmDetail.description;
+      }
+
+
+
+    } catch (error) {
+      console.error("Erreur Fetch :", error);
+    }
+    
+  }
+
+  afficherFilmsMieuxNotes()
 
 
 
