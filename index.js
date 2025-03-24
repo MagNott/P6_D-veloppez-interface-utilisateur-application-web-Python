@@ -6,6 +6,7 @@ const urlFilmsMysteryPage2 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Mystery
 const urlFilmsAnimationPage1 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Animation&page=1'
 const urlFilmsAnimationPage2 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Animation&page=2'
 const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
+const urlBaseGenre = 'http://127.0.0.1:8000/api/v1/genres/';
 
 
 async function afficherMeilleurFilm() {
@@ -37,7 +38,7 @@ async function afficherMeilleurFilm() {
     }
   }
   
-  afficherMeilleurFilm();
+afficherMeilleurFilm();
 
 async function afficherFilmsMieuxNotes() {
   try {
@@ -58,8 +59,6 @@ async function afficherFilmsMieuxNotes() {
     const ListeFilmsMieuxNotesPage2 = dataListeFilmsMieuxNotesPage2.results[0]
 
     const ListeFilmsMieuxNotes = ListeFilmsMieuxNotesPage1.concat(ListeFilmsMieuxNotesPage2);
-
-    console.log(ListeFilmsMieuxNotes)
 
     // Etape 3 : affichage dans lee HTML
 
@@ -88,9 +87,9 @@ async function afficherFilmsMieuxNotes() {
     console.error("Erreur Fetch :", error);
   }
   
-}
+  }
 
-  afficherFilmsMieuxNotes()
+afficherFilmsMieuxNotes()
 
 async function afficherFilmsMystery() {
   try {
@@ -138,52 +137,101 @@ async function afficherFilmsMystery() {
     
   }
 
-  afficherFilmsMystery();
+afficherFilmsMystery();
 
-  async function afficherFilmsAnimation() {
-    try {
-  
-      // Etape 1 : récupérer la liste tirée et préparer les données
-      const reponseAnimationPage1 = await fetch(urlFilmsAnimationPage1)
-      if (!reponseAnimationPage1.ok) throw new Error("Erreur réseau - liste d'animation de la page 1")
-      const dataListeAnimationPage1 = await reponseAnimationPage1.json();
-  
-      const reponseAnimationPage2 = await fetch(urlFilmsAnimationPage2)
-      if (!reponseAnimationPage2.ok) throw new Error("Erreur réseau - liste d'animation de la page 2")
-      const dataListeAnimationPage2 = await reponseAnimationPage2.json();
-  
-  
-      // Etape 2 : réduire la liste à 6 films
-  
-      const ListeAnimationPage1 = dataListeAnimationPage1.results;
-      const ListeAnimationPage2 = dataListeAnimationPage2.results[0]
-  
-      const ListeAnimation = ListeAnimationPage1.concat(ListeAnimationPage2);
-  
-      // Etape 3 : affichage dans le HTML
-  
-      for (let i =0; i < ListeAnimation.length; i++){
-        // récupérer les détails du film
-        const film = ListeAnimation[i]
-        const urlfilm = film.url
-        const reponseUrlFilm = await fetch(urlfilm);
-        if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - Détail des films animation');
-  
-        const filmDetail = await reponseUrlFilm.json();
-  
-        const elementTitre = document.getElementById("titre-film-animation-" + i);
-        const elementImage = document.getElementById("img-film-animation-" + i);
-        const elementDescription = document.getElementById("description_film-animation-" + i);
-  
-        elementTitre.innerText = film.title;
-        elementImage.src = film.image_url;
-        elementDescription.innerText = filmDetail.description;
-      }
-  
-    } catch (error) {
-      console.error("Erreur Fetch :", error);
+async function afficherFilmsAnimation() {
+  try {
+
+    // Etape 1 : récupérer la liste tirée et préparer les données
+    const reponseAnimationPage1 = await fetch(urlFilmsAnimationPage1)
+    if (!reponseAnimationPage1.ok) throw new Error("Erreur réseau - liste d'animation de la page 1")
+    const dataListeAnimationPage1 = await reponseAnimationPage1.json();
+
+    const reponseAnimationPage2 = await fetch(urlFilmsAnimationPage2)
+    if (!reponseAnimationPage2.ok) throw new Error("Erreur réseau - liste d'animation de la page 2")
+    const dataListeAnimationPage2 = await reponseAnimationPage2.json();
+
+
+    // Etape 2 : réduire la liste à 6 films
+
+    const ListeAnimationPage1 = dataListeAnimationPage1.results;
+    const ListeAnimationPage2 = dataListeAnimationPage2.results[0]
+
+    const ListeAnimation = ListeAnimationPage1.concat(ListeAnimationPage2);
+
+    // Etape 3 : affichage dans le HTML
+
+    for (let i =0; i < ListeAnimation.length; i++){
+      // récupérer les détails du film
+      const film = ListeAnimation[i]
+      const urlfilm = film.url
+      const reponseUrlFilm = await fetch(urlfilm);
+      if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - Détail des films animation');
+
+      const filmDetail = await reponseUrlFilm.json();
+
+      const elementTitre = document.getElementById("titre-film-animation-" + i);
+      const elementImage = document.getElementById("img-film-animation-" + i);
+      const elementDescription = document.getElementById("description_film-animation-" + i);
+
+      elementTitre.innerText = film.title;
+      elementImage.src = film.image_url;
+      elementDescription.innerText = filmDetail.description;
     }
+
+  } catch (error) {
+    console.error("Erreur Fetch :", error);
+  }
+    
+  }
+
+afficherFilmsAnimation();
+
+async function afficherGenres() {
+  try {
+
+    // Etape 1 : récupérer la liste 
+    const reponseGenresPage1 = await fetch(urlBaseGenre)
+      if (!reponseGenresPage1.ok) throw new Error("Erreur réseau - liste des genres de la page 1")
+    const dataListeGenrePage1 = await reponseGenresPage1.json();
+
+    let listeGenreBrute = dataListeGenrePage1.results
+
+    let urlPageSuivante = dataListeGenrePage1.next
+      if (!dataListeGenrePage1.next) throw new Error('Erreur réseau - Impossible de changer de page');
+
+    while (urlPageSuivante) {
+      const reponseGenrePageSuivante = await fetch(urlPageSuivante)
+        if (!reponseGenrePageSuivante.ok) throw new Error("Erreur réseau - Impossible de changer de page")
+      const dataGenrePageSuivante = await reponseGenrePageSuivante.json();
       
+
+    listeGenreBrute = listeGenreBrute.concat(dataGenrePageSuivante.results)
+
+    urlPageSuivante = dataGenrePageSuivante.next
+
     }
-  
-    afficherFilmsAnimation();
+
+    // Etape 2 : Filtrer pour enlever les filtres des catégories déjà affichés
+    const categoriesDejaAffiches = ["Mystery", "Animation"];
+    const listeGenre = listeGenreBrute.filter((genre) => {
+      return !categoriesDejaAffiches.includes(genre.name);
+    })
+
+    // Etape 3 : affichage dans le HTML
+      for (let index = 0; index < listeGenre.length; index++) {
+
+      const nouvelleOption = document.createElement("option");
+      nouvelleOption.value = listeGenre[index].name;
+      nouvelleOption.textContent = listeGenre[index].name;
+      document.getElementById("select-genres").appendChild(nouvelleOption);
+      
+      }
+
+
+    } catch (error) {
+    console.error("Erreur Fetch :", error);
+  }
+    
+  }
+afficherGenres()
