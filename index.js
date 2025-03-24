@@ -3,6 +3,8 @@ const urlFilmsMieuxNotesPage1 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-i
 const urlFilmsMieuxNotesPage2 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score&page=2';
 const urlFilmsMysteryPage1 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Mystery&page=1'
 const urlFilmsMysteryPage2 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Mystery&page=2'
+const urlFilmsAnimationPage1 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Animation&page=1'
+const urlFilmsAnimationPage2 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Animation&page=2'
 const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
 
 
@@ -95,11 +97,11 @@ async function afficherFilmsMystery() {
 
     // Etape 1 : récupérer la liste tirée et préparer les données
     const reponseMysteryPage1 = await fetch(urlFilmsMysteryPage1)
-    if (!reponseMysteryPage1.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 1')
+    if (!reponseMysteryPage1.ok) throw new Error('Erreur réseau - liste films Mystery de la page 1')
     const dataListeMysteryPage1 = await reponseMysteryPage1.json();
 
     const reponseMysteryPage2 = await fetch(urlFilmsMysteryPage2)
-    if (!reponseMysteryPage2.ok) throw new Error('Erreur réseau - liste films les mieux notés de la page 2')
+    if (!reponseMysteryPage2.ok) throw new Error('Erreur réseau - liste films Mystery de la page 2')
     const dataListeMysteryPage2 = await reponseMysteryPage2.json();
 
 
@@ -138,45 +140,50 @@ async function afficherFilmsMystery() {
 
   afficherFilmsMystery();
 
-
-
+  async function afficherFilmsAnimation() {
+    try {
   
-// fetch('http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score,-votes')
-//   .then(response => {
-//     if (!response.ok) throw new Error('Erreur réseau');
-//     return response.json();
-//   })
-//   .then(data => {
-//     const film = data.results[0];
-
-//     fetch(url_titre + film.id)
-//     . then(response => {
-//         if (!response.ok) throw new Error('Erreur réseau');
-//         return response.json();
-//       })
-//       .then(data => {
-//         const description = data.description;
-
-//         const elementDescription = document.getElementById("description_film");
-
-//         elementDescription.innerText = description;
-//       })
-//       .catch(error => {
-//         console.error('Erreur Fetch:', error);
-//       })
-
-//     const titre = film.title;
-//     const image = film.image_url;
-    
-
-//     const elementTitre = document.getElementById("titre-film");
-//     const elementImage = document.getElementById("img-film");
-    
-
-//     elementTitre.innerText = titre;
-//     elementImage.src = image;
-    
-//   })
-//   .catch(error => {
-//     console.error('Erreur Fetch:', error);
-//   })
+      // Etape 1 : récupérer la liste tirée et préparer les données
+      const reponseAnimationPage1 = await fetch(urlFilmsAnimationPage1)
+      if (!reponseAnimationPage1.ok) throw new Error("Erreur réseau - liste d'animation de la page 1")
+      const dataListeAnimationPage1 = await reponseAnimationPage1.json();
+  
+      const reponseAnimationPage2 = await fetch(urlFilmsAnimationPage2)
+      if (!reponseAnimationPage2.ok) throw new Error("Erreur réseau - liste d'animation de la page 2")
+      const dataListeAnimationPage2 = await reponseAnimationPage2.json();
+  
+  
+      // Etape 2 : réduire la liste à 6 films
+  
+      const ListeAnimationPage1 = dataListeAnimationPage1.results;
+      const ListeAnimationPage2 = dataListeAnimationPage2.results[0]
+  
+      const ListeAnimation = ListeAnimationPage1.concat(ListeAnimationPage2);
+  
+      // Etape 3 : affichage dans le HTML
+  
+      for (let i =0; i < ListeAnimation.length; i++){
+        // récupérer les détails du film
+        const film = ListeAnimation[i]
+        const urlfilm = film.url
+        const reponseUrlFilm = await fetch(urlfilm);
+        if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - Détail des films animation');
+  
+        const filmDetail = await reponseUrlFilm.json();
+  
+        const elementTitre = document.getElementById("titre-film-animation-" + i);
+        const elementImage = document.getElementById("img-film-animation-" + i);
+        const elementDescription = document.getElementById("description_film-animation-" + i);
+  
+        elementTitre.innerText = film.title;
+        elementImage.src = film.image_url;
+        elementDescription.innerText = filmDetail.description;
+      }
+  
+    } catch (error) {
+      console.error("Erreur Fetch :", error);
+    }
+      
+    }
+  
+    afficherFilmsAnimation();
