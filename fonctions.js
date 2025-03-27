@@ -2,11 +2,11 @@ const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
 const urlBaseGenre = 'http://127.0.0.1:8000/api/v1/genres/';
 const uriMeilleursFilms = '?sort_by=-imdb_score,-votes';
 const uriFilmsMieuxNotesPage1 = '?sort_by=-imdb_score&page=1';
-const uriFilmsMieuxNotesPage2 = 'http://127.0.0.1:8000/api/v1/titles/?sort_by=-imdb_score&page=2';
+const uriFilmsMieuxNotesPage2 = '?sort_by=-imdb_score&page=2';
 const uriFilmsMysteryPage1 = '?genre=Mystery&page=1'
 const uriFilmsMysteryPage2 = '?genre=Mystery&page=2'
-const uriFilmsAnimationPage1 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Animation&page=1'
-const uriFilmsAnimationPage2 = 'http://127.0.0.1:8000/api/v1/titles/?genre=Animation&page=2'
+const uriFilmsAnimationPage1 = '?genre=Animation&page=1'
+const uriFilmsAnimationPage2 = '?genre=Animation&page=2'
 const urlMeilleursFilms = urlBaseTitre + uriMeilleursFilms
 
 /**
@@ -63,6 +63,7 @@ async function afficherMeilleurFilm() {
 async function afficherFilmsCategorie(p_urlPage1, p_urlPage2, p_categorie) {
 
     try {
+
         // Etape 1 : récupérer la liste tirée et préparer les données
         const reponseFilmsPage1 = await fetch(p_urlPage1)
         if (!reponseFilmsPage1.ok) throw new Error('Erreur réseau - liste films de la page 1')
@@ -72,13 +73,11 @@ async function afficherFilmsCategorie(p_urlPage1, p_urlPage2, p_categorie) {
         if (!reponseFilmsPage2.ok) throw new Error('Erreur réseau - liste films de la page 2')
         const dataListeFilmsPage2 = await reponseFilmsPage2.json();
 
-
         // Etape 2 : réduire la liste à 6 films
         const ListeFilmsPage1 = dataListeFilmsPage1.results;
         const ListeFilmsPage2 = dataListeFilmsPage2.results[0]
 
         const ListeFilms = ListeFilmsPage1.concat(ListeFilmsPage2);
-
 
         // Etape 3 : affichage dans le HTML
         const section = document.getElementById(p_categorie);

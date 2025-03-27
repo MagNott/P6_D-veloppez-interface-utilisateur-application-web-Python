@@ -22,4 +22,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prépare une Selectbox avec tous les genres de film
   afficherGenres()
 
+
+  const selectBox = document.getElementById("select-genres")
+
+  selectBox.addEventListener("change", (event) => {
+    document.getElementById("contenu-films").innerHTML = "";
+    const genreChoisi = event.target.value
+
+    const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&page=1`;
+    const urlPage2 = urlBaseTitre + `?genre=${genreChoisi}&page=2`;
+
+    afficherFilmsCategorie(urlPage1, urlPage2, "contenu-films")
+
+  })
+
 });
