@@ -2,11 +2,8 @@ const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
 const urlBaseGenre = 'http://127.0.0.1:8000/api/v1/genres/';
 const uriMeilleursFilms = '?sort_by=-imdb_score,-votes';
 const uriFilmsMieuxNotesPage1 = '?sort_by=-imdb_score&page=1';
-const uriFilmsMieuxNotesPage2 = '?sort_by=-imdb_score&page=2';
 const uriFilmsMysteryPage1 = '?genre=Mystery&page=1'
-const uriFilmsMysteryPage2 = '?genre=Mystery&page=2'
 const uriFilmsAnimationPage1 = '?genre=Animation&page=1'
-const uriFilmsAnimationPage2 = '?genre=Animation&page=2'
 const urlMeilleursFilms = urlBaseTitre + uriMeilleursFilms
 
 /**
@@ -60,7 +57,7 @@ async function afficherMeilleurFilm() {
  * @param {string} p_categorie - ID de la section HTML correspondant à la catégorie (ex : "mystery")
  * @returns {Promise<void>} Ne retourne rien (mise à jour du DOM)
  */
-async function afficherFilmsCategorie(p_urlPage1, p_urlPage2, p_categorie) {
+async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
 
     try {
 
@@ -69,24 +66,31 @@ async function afficherFilmsCategorie(p_urlPage1, p_urlPage2, p_categorie) {
         if (!reponseFilmsPage1.ok) throw new Error('Erreur réseau - liste films de la page 1')
         const dataListeFilmsPage1 = await reponseFilmsPage1.json();
 
-        const reponseFilmsPage2 = await fetch(p_urlPage2)
-        if (!reponseFilmsPage2.ok) throw new Error('Erreur réseau - liste films de la page 2')
-        const dataListeFilmsPage2 = await reponseFilmsPage2.json();
+        let listeFilms = dataListeFilmsPage1.results;
+
+        if (dataListeFilmsPage1.next){
+            const reponseFilmsPage2 = await fetch(dataListeFilmsPage1.next)
+            if (!reponseFilmsPage2.ok) throw new Error('Erreur réseau - liste films de la page 2')
+            const dataListeFilmsPage2 = await reponseFilmsPage2.json();
+
+            const listeFilmsPage2 = dataListeFilmsPage2.results[0]
+            console.log(Array.isArray(listeFilms));
+            console.log(listeFilmsPage2);
+            listeFilms.push(listeFilmsPage2);
+        }
+
 
         // Etape 2 : réduire la liste à 6 films
-        const ListeFilmsPage1 = dataListeFilmsPage1.results;
-        const ListeFilmsPage2 = dataListeFilmsPage2.results[0]
 
-        const ListeFilms = ListeFilmsPage1.concat(ListeFilmsPage2);
 
         // Etape 3 : affichage dans le HTML
         const section = document.getElementById(p_categorie);
         const template = document.getElementById("template-film");
 
-        for (let i = 0; i < ListeFilms.length; i++) {
+        for (let i = 0; i < listeFilms.length; i++) {
             const cloneTemplate = template.content.cloneNode(true);
             // récupérer les détails du film
-            const film = ListeFilms[i]
+            const film = listeFilms[i]
             const urlfilm = film.url
             const reponseUrlFilm = await fetch(urlfilm);
             if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des film');
@@ -94,7 +98,11 @@ async function afficherFilmsCategorie(p_urlPage1, p_urlPage2, p_categorie) {
             const filmDetail = await reponseUrlFilm.json();
 
             cloneTemplate.querySelector(".titre-film").innerText = film.title;
-            cloneTemplate.querySelector(".img-film").src = film.image_url;
+
+            // Gestion d'affichage de l'image si l'image de l'api renvoie une erreur 404
+            const imageElement = cloneTemplate.querySelector(".img-film");
+            chargerImage(imageElement, film.image_url);
+            
             cloneTemplate.querySelector(".description-film").innerText = filmDetail.description;
 
             section.appendChild(cloneTemplate);
@@ -160,3 +168,22 @@ async function afficherFilmsCategorie(p_urlPage1, p_urlPage2, p_categorie) {
             console.error("Erreur Fetch :", error);
         }
     }
+
+    /**
+    * Charge une image dans un élément <img> et utilise une image par défaut si l'image est introuvable.
+    *
+    * @function chargerImage
+    * @param {HTMLImageElement} p_imageElement - Élément <img> dans lequel l'image sera chargée.
+    * @param {string} p_imageUrl - URL de l'image à charger.
+    * 
+    * Cette fonction tente de charger l'image spécifiée par p_imageUrl dans l'élément HTML donné.
+    * Si l'image échoue à se charger (erreur réseau, image absente, etc.), une image par défaut sera affichée à la place.
+    */
+    function chargerImage(p_imageElement, p_imageUrl) {
+        p_imageElement.src = p_imageUrl;
+        
+        p_imageElement.onerror = function() {
+            this.src = "images/image_non_trouvee.jpg"; // Image de remplacement en cas d'erreur
+        };
+    }
+    
