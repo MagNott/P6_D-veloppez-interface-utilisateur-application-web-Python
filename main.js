@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Prépare une Selectbox avec tous les genres de film
   afficherGenres()
 
-
   const selectBox = document.getElementById("select-genres")
 
   selectBox.addEventListener("change", (event) => {

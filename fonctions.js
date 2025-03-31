@@ -44,18 +44,22 @@ async function afficherMeilleurFilm() {
         console.error("Erreur Fetch :", error);
     }
 }
-
 /**
- * Construit dynamiquement une section HTML contenant les 6 meilleurs films d’une catégorie.
- * Récupère les données depuis deux pages de l’API, fusionne les résultats,
- * puis insère les informations dans l’élément HTML correspondant à la catégorie.
+ * Affiche dynamiquement une catégorie de 6 films dans le HTML.
+ *
+ * Cette fonction :
+ * - Récupère les films depuis l'API (page 1 obligatoire, page 2 facultative).
+ * - Concatène le premier film de la page 2 à la liste correspondant à la page 1.
+ * - Génère dynamiquement les blocs HTML pour chaque film à l'aide d'un <template>.
+ * - Remplit les informations du film (titre, image).
+ * - Ajoute un bouton "Détails" pour ouvrir la modale contenant le détail du film sélectionné.
+ * - Gère le placeholder d'image en cas d'image non disponible.
  *
  * @async
  * @function afficherFilmsCategorie
  * @param {string} p_urlPage1 - URL de l'API pour la page 1 des films
- * @param {string} p_urlPage2 - URL de l'API pour la page 2 des films
- * @param {string} p_categorie - ID de la section HTML correspondant à la catégorie (ex : "mystery")
- * @returns {Promise<void>} Ne retourne rien (mise à jour du DOM)
+ * @param {string} p_categorie - ID de la section HTML où insérer les films (ex : "mystery")
+ * @returns {Promise<void>} Ne retourne rien (mise à jour directe du DOM)
  */
 async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
 
@@ -79,11 +83,7 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             listeFilms.push(listeFilmsPage2);
         }
 
-
-        // Etape 2 : réduire la liste à 6 films
-
-
-        // Etape 3 : affichage dans le HTML
+        // Etape 2 : affichage dans le HTML
         const section = document.getElementById(p_categorie);
         const template = document.getElementById("template-film");
 
@@ -95,15 +95,24 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             const reponseUrlFilm = await fetch(urlfilm);
             if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des film');
 
-            const filmDetail = await reponseUrlFilm.json();
-
+            
             cloneTemplate.querySelector(".titre-film").innerText = film.title;
+
+            // Préparation du bouton pour qu'il récupère l'url du film
+            const boutonDetails = cloneTemplate.querySelector(".bouton-detail");
+            boutonDetails.innerText = "Détails"
+            boutonDetails.dataset.url = film.url
+
+            // Ecoute de l'évenement click pour générer la modale
+            boutonDetails.addEventListener("click", (event) => {
+                const urlFilm = event.target.dataset.url; // récupération de l'url stockée
+                afficherModale(urlFilm); // passage de l'url dans la fonction d’affichage de la modale
+                console.log("clic détecté", urlFilm)
+            });
 
             // Gestion d'affichage de l'image si l'image de l'api renvoie une erreur 404
             const imageElement = cloneTemplate.querySelector(".img-film");
             chargerImage(imageElement, film.image_url);
-            
-            cloneTemplate.querySelector(".description-film").innerText = filmDetail.description;
 
             section.appendChild(cloneTemplate);
         }
@@ -187,3 +196,55 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
         };
     }
     
+/**
+ * Affiche une modale contenant les détails d'un film.
+ *
+ * Cette fonction :
+ * - Récupère les informations détaillées du film via l'API (avec l'URL fournie).
+ * - Clone le template de la modale.
+ * - Remplit les champs de la modale (titre, image, année, genres, durée, score, réalisateurs, description, acteurs).
+ * - Insère la modale dans le DOM.
+ * - Ajoute un bouton de fermeture permettant de retirer la modale du DOM.
+ *
+ * @async
+ * @function afficherModale
+ * @param {string} p_url_film - L'URL de l'API pour récupérer les détails du film.
+ * @returns {Promise<void>} Ne retourne rien (modifie uniquement le DOM).
+ */
+async function afficherModale(p_url_film) {
+
+    try {
+        // Récupérer les infos du film
+        const reponseFilm = await fetch(p_url_film)
+        if (!reponseFilm.ok) throw new Error('Erreur réseau - détail film')
+
+        const filmDetail = await reponseFilm.json();
+        
+        // Afficher les infos dans la modale
+        const template = document.getElementById("template-modale");
+        const cloneTemplateDetail = template.content.cloneNode(true);
+
+        cloneTemplateDetail.querySelector(".titre-film").innerText = filmDetail.title;
+        cloneTemplateDetail.querySelector(".img-film").src = filmDetail.image_url;
+        cloneTemplateDetail.querySelector(".annee-film").innerText = filmDetail.year;
+        cloneTemplateDetail.querySelector(".genre-film").innerText = filmDetail.genres;
+        cloneTemplateDetail.querySelector(".duree-film").innerText = filmDetail.duration;
+        cloneTemplateDetail.querySelector(".score-film").innerText = filmDetail.imdb_score;
+        cloneTemplateDetail.querySelector(".realisateur-film").innerText = filmDetail.directors;
+        cloneTemplateDetail.querySelector(".description_longue-film").innerText = filmDetail.long_description;
+        cloneTemplateDetail.querySelector(".acteurs_film").innerText = filmDetail.actors;
+
+        document.body.appendChild(cloneTemplateDetail);
+
+        const modale = document.querySelector(".detail-film"); // Cible directement l'article de la modale
+
+        const boutonFermer = modale.querySelector("button");
+
+        boutonFermer.addEventListener("click", () => {
+            modale.remove();
+        });
+
+} catch (error) {
+    console.error("Erreur Fetch :", error);
+}
+}
