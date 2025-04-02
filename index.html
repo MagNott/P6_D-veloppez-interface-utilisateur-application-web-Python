@@ -8,39 +8,67 @@
   <title>Vidéos à la demande</title>
   <script src="fonctions.js"></script>
   <script src="main.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
   <header>
-    <h1>JustStreamIt</h1>
+    <!-- <h1>JustStreamIt</h1> -->
+    <img class="max-w-screen-xl mx-auto" src="images/Banniere_JustStream_It.png">
 
   </header>
-  <main>
+  <main class="container max-w-screen-xl mx-auto">
 
     <!-- TEMPLATES -->
     <!-- Template pour l'affichage de la modale -->
     <template id="template-modale">
-      <article class="detail-film">
-        <h3 class="titre-film"></h3>
-        <img class="img-film" src="" />
-        <p class="annee-film"></p>
-        <p class="genre-film"></p>
-        <p class="duree-film"></p>
-        <p class="score-film"></p>
-        <p class="realisateur-film"></p>
-        <p class="description_longue-film"></p>
-        <p class="acteurs_film"></p>
-        <button>Fermer</button>
-      </article>
+      <div class="modale fixed inset-0 z-50 bg-white border-8 border-black p-4 m-5 flex items-center justify-center">
+        <article class="detail-film">
+          <div class="flex">
+            <div class="flex w-1/2 flex flex-col">
+              <h3 class="titre-film font-bold text-6xl px-8"></h3>
+              <div class="flex">
+                <p class="annee-film font-bold text-3xl pl-8"></p>
+                <p class="font-bold text-3xl">  -  </p>
+                <p class="genre-film font-bold text-3xl"></p>
+              </div>
+              <p class="duree-film font-bold text-3xl px-8"></p>
+              <p class="score-film font-bold text-3xl px-8"></p>
+              <div class="flex flex-col my-10">
+                <p class="font-bold text-2xl px-8">Réalisé par : </p>
+                <p class="realisateur-film text-2xl px-8"></p>
+              </div>
+            </div>
+            <div class="w-1/2">
+              <img class="img-film ml-auto px-20 max-w-md w-full h-auto object-cover" src="" />
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <p class="description_longue-film text-2xl p-4 m-5"></p>
+            <div class="flex flex-col my-10">
+              <p class="font-bold text-2xl px-8">Avec : </p>
+              <p class="acteurs_film text-xl px-8"></p>
+            </div>
+            <button
+              class="bg-red-600 text-white self-center text-xl px-20 py-2 my-5 rounded-3xl hover:bg-red-700 transition">Fermer</button>
+          </div>
+        </article>
+      </div>
     </template>
 
-    <!-- TeMplate pour l'affichage de la section dynamique -->
+    <!-- Template pour l'affichage de la section dynamique -->
     <template id="template-film">
-      <article class="film">
-        <h3 class="titre-film"></h3>
-        <img class="img-film" src="" />
-        <!-- <p class="description-film"></p> -->
-        <button class="bouton-detail"></button>
+      <article class="film relative inline-block m-4">
+        <img class="img-film aspect-square object-cover w-full" src="" />
+        <div
+          class="absolute inset-x-0 top-[15%] h-2/4 bg-black bg-opacity-50 w-full h-40 flex flex-col justify-between">
+          <h3 class="titre-film font-bold text-3xl text-white ml-5"></h3>
+
+          <!-- <p class="description-film"></p> -->
+
+          <button
+            class="bouton-detail bg-gray-800 text-white px-5 py-3 rounded-3xl hover:bg-gray-500 transition self-end mr-2 mb-2 font-bold text-2xl"></button>
+        </div>
       </article>
     </template>
 
@@ -48,42 +76,56 @@
     <!-- AFFICHAGE DES SECTIONS STATIQUES -->
 
     <!-- Le meilleur film -->
-    <section id="meilleur-film">
-      <h2>Meilleur film</h2>
-      <h3 id="titre-film"></h3>
-      <img id="img-film" src= />
-      <p id="description_film"></p>
+    <section class="container mx-auto" id="meilleur-film">
+      <h2 class="font-bold text-6xl my-9 mx-3">Meilleur film</h2>
+      <div class="flex items-center border-8 border-black p-6 m-5">
+        <img id="img-film" class="w-1/2 h-auto object-cover" src= />
+        <div class="flex flex-col ml-4">
+          <h3 class="font-bold text-6xl pl-5 m-4" id="titre-film"></h3>
+          <p class="pl-5 m-4 text-3xl" id="description_film"></p>
+          <button
+            class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition self-end text-2xl">Détails</button>
+        </div>
+      </div>
 
     </section>
 
     <!-- Section 1 : Films les mieux notés tous genres confondus -->
-    <section id="meilleures-notes">
-      <h2>Films les mieux notés</h2>
+    <section class="container mx-auto" id="meilleures-notes">
+      <h2 class="font-bold text-6xl my-9 mx-3">Films les mieux notés</h2>
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      </div>
 
     </section>
 
     <!-- Section 2 : Mystery -->
-    <section id="mystery">
-      <h2>Mystery</h2>
+    <section class="container mx-auto" id="mystery">
+      <h2 class="font-bold text-6xl my-9 mx-3">Mystery</h2>
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      </div>
 
     </section>
 
     <!-- Section 3 : Animation -->
-    <section id="animation">
-      <h2>Animation</h2>
+    <section class="container mx-auto" id="animation">
+      <h2 class="font-bold text-6xl my-9 mx-3">Animation</h2>
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      </div>
 
     </section>
 
 
     <!-- SECTION DYNAMIQUE -->
 
-    <section id="categorie_autres">
-      <h2>Catégorie Autres : </h2>
-      <label for="select-genres">Autres catégories :</label>
-      <select id="select-genres">
-        <!-- Les <option> seront ajoutées en JS -->
-      </select>
-      <div id="contenu-films">
+    <section class="container mx-auto" id="categorie_autres">
+      <div class="flex items-center">
+        <h2 class="font-bold text-6xl my-9 mx-3">Autres : </h2>
+        <label for="select-genres"></label>
+        <select id="select-genres" class="font-bold text-2xl border border-black px-4 py-2 mt-4">
+          <!-- Les <option> seront ajoutées en JS -->
+        </select>
+      </div>
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="contenu-films">
         <!-- Les films seront ajoutées en JS -->
       </div>
 

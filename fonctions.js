@@ -2,8 +2,8 @@ const urlBaseTitre = 'http://127.0.0.1:8000/api/v1/titles/';
 const urlBaseGenre = 'http://127.0.0.1:8000/api/v1/genres/';
 const uriMeilleursFilms = '?sort_by=-imdb_score,-votes';
 const uriFilmsMieuxNotesPage1 = '?sort_by=-imdb_score&page=1';
-const uriFilmsMysteryPage1 = '?genre=Mystery&page=1'
-const uriFilmsAnimationPage1 = '?genre=Animation&page=1'
+const uriFilmsMysteryPage1 = '?genre=Mystery&sort_by=-imdb_score&page=1'
+const uriFilmsAnimationPage1 = '?genre=Animation&sort_by=-imdb_score&page=1'
 const urlMeilleursFilms = urlBaseTitre + uriMeilleursFilms
 
 /**
@@ -78,14 +78,13 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             const dataListeFilmsPage2 = await reponseFilmsPage2.json();
 
             const listeFilmsPage2 = dataListeFilmsPage2.results[0]
-            console.log(Array.isArray(listeFilms));
-            console.log(listeFilmsPage2);
             listeFilms.push(listeFilmsPage2);
         }
 
         // Etape 2 : affichage dans le HTML
         const section = document.getElementById(p_categorie);
         const template = document.getElementById("template-film");
+        const grid = section.getElementsByClassName("contenu-films");
 
         for (let i = 0; i < listeFilms.length; i++) {
             const cloneTemplate = template.content.cloneNode(true);
@@ -107,14 +106,13 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             boutonDetails.addEventListener("click", (event) => {
                 const urlFilm = event.target.dataset.url; // récupération de l'url stockée
                 afficherModale(urlFilm); // passage de l'url dans la fonction d’affichage de la modale
-                console.log("clic détecté", urlFilm)
             });
 
             // Gestion d'affichage de l'image si l'image de l'api renvoie une erreur 404
             const imageElement = cloneTemplate.querySelector(".img-film");
             chargerImage(imageElement, film.image_url);
 
-            section.appendChild(cloneTemplate);
+            grid[0].appendChild(cloneTemplate);
         }
 
     } catch (error) {
@@ -152,9 +150,7 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
                 if (!reponseGenrePageSuivante.ok) throw new Error("Erreur réseau - Impossible de changer de page")
                 const dataGenrePageSuivante = await reponseGenrePageSuivante.json();
 
-
                 listeGenreBrute = listeGenreBrute.concat(dataGenrePageSuivante.results)
-
                 urlPageSuivante = dataGenrePageSuivante.next
             }
 
@@ -192,7 +188,7 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
         p_imageElement.src = p_imageUrl;
         
         p_imageElement.onerror = function() {
-            this.src = "images/image_non_trouvee.jpg"; // Image de remplacement en cas d'erreur
+            this.src = "images/image_non_trouvee.png"; // Image de remplacement en cas d'erreur
         };
     }
     
@@ -225,18 +221,22 @@ async function afficherModale(p_url_film) {
         const cloneTemplateDetail = template.content.cloneNode(true);
 
         cloneTemplateDetail.querySelector(".titre-film").innerText = filmDetail.title;
-        cloneTemplateDetail.querySelector(".img-film").src = filmDetail.image_url;
+
+        // Gestion d'affichage de l'image si l'image de l'api renvoie une erreur 404
+        const imageElement = cloneTemplateDetail.querySelector(".img-film");
+        chargerImage(imageElement, filmDetail.image_url);
+
         cloneTemplateDetail.querySelector(".annee-film").innerText = filmDetail.year;
         cloneTemplateDetail.querySelector(".genre-film").innerText = filmDetail.genres;
-        cloneTemplateDetail.querySelector(".duree-film").innerText = filmDetail.duration;
-        cloneTemplateDetail.querySelector(".score-film").innerText = filmDetail.imdb_score;
+        cloneTemplateDetail.querySelector(".duree-film").innerText = filmDetail.duration + " minutes";
+        cloneTemplateDetail.querySelector(".score-film").innerText = "IMDB score : " + filmDetail.imdb_score;
         cloneTemplateDetail.querySelector(".realisateur-film").innerText = filmDetail.directors;
         cloneTemplateDetail.querySelector(".description_longue-film").innerText = filmDetail.long_description;
         cloneTemplateDetail.querySelector(".acteurs_film").innerText = filmDetail.actors;
 
         document.body.appendChild(cloneTemplateDetail);
 
-        const modale = document.querySelector(".detail-film"); // Cible directement l'article de la modale
+        const modale = document.querySelector(".modale"); // Cible directement l'article de la modale
 
         const boutonFermer = modale.querySelector("button");
 
@@ -244,7 +244,7 @@ async function afficherModale(p_url_film) {
             modale.remove();
         });
 
-} catch (error) {
-    console.error("Erreur Fetch :", error);
-}
+    } catch (error) {
+        console.error("Erreur Fetch :", error);
+    }
 }
