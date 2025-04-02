@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&page=1`;
 
-    afficherFilmsCategorie(urlPage1, "contenu-films")
+    afficherFilmsCategorie(urlPage1, "categorie_autres")
 
   })
 
