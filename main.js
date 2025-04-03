@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("contenu-films").innerHTML = "";
     const genreChoisi = event.target.value
 
-    const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&page=1`;
+    const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&sort_by=-imdb_score&page=1`;
 
     afficherFilmsCategorie(urlPage1, "categorie_autres")
 
