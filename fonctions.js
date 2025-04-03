@@ -40,6 +40,15 @@ async function afficherMeilleurFilm() {
         elementImage.src = meilleurFilm.image_url;
         elementDescription.innerText = filmDetail.description;
 
+        // Affichage modale
+        // Récuparation du bouton pour l'écoute du click
+        const boutonDetails = document.querySelector(".bouton-detail");
+
+        // Ecoute de l'évenement click pour générer la modale
+        boutonDetails.addEventListener("click", (event) => {
+            afficherModale(meilleurFilm.url); // passage de l'url dans la fonction d’affichage de la modale
+        });
+
     } catch (error) {
         console.error("Erreur Fetch :", error);
     }
@@ -72,7 +81,7 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
 
         let listeFilms = dataListeFilmsPage1.results;
 
-        if (dataListeFilmsPage1.next){
+        if (dataListeFilmsPage1.next) {
             const reponseFilmsPage2 = await fetch(dataListeFilmsPage1.next)
             if (!reponseFilmsPage2.ok) throw new Error('Erreur réseau - liste films de la page 2')
             const dataListeFilmsPage2 = await reponseFilmsPage2.json();
@@ -94,7 +103,7 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             const reponseUrlFilm = await fetch(urlfilm);
             if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des film');
 
-            
+
             cloneTemplate.querySelector(".titre-film").innerText = film.title;
 
             // Préparation du bouton pour qu'il récupère l'url du film
@@ -121,77 +130,77 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
 }
 
 
-    /**
-     * Récupère dynamiquement tous les genres disponibles depuis l'API
-     * (en parcourant les pages de résultats), filtre ceux déjà affichés,
-     * puis les insère dans un menu déroulant (élément HTML <select>).
-     *
-     * Genres exclus de l'affichage : "Mystery", "Animation".
-     *
-     * @async
-     * @function afficherGenres
-     * @returns {Promise<void>} Ne retourne rien, mais insère dynamiquement des <option> dans le <select id="select-genres">
-     */
-    async function afficherGenres() {
-        try {
+/**
+ * Récupère dynamiquement tous les genres disponibles depuis l'API
+ * (en parcourant les pages de résultats), filtre ceux déjà affichés,
+ * puis les insère dans un menu déroulant (élément HTML <select>).
+ *
+ * Genres exclus de l'affichage : "Mystery", "Animation".
+ *
+ * @async
+ * @function afficherGenres
+ * @returns {Promise<void>} Ne retourne rien, mais insère dynamiquement des <option> dans le <select id="select-genres">
+ */
+async function afficherGenres() {
+    try {
 
-            // Etape 1 : récupérer la liste 
-            const reponseGenresPage1 = await fetch(urlBaseGenre)
-            if (!reponseGenresPage1.ok) throw new Error("Erreur réseau - liste des genres de la page 1")
-            const dataListeGenrePage1 = await reponseGenresPage1.json();
+        // Etape 1 : récupérer la liste 
+        const reponseGenresPage1 = await fetch(urlBaseGenre)
+        if (!reponseGenresPage1.ok) throw new Error("Erreur réseau - liste des genres de la page 1")
+        const dataListeGenrePage1 = await reponseGenresPage1.json();
 
-            let listeGenreBrute = dataListeGenrePage1.results
+        let listeGenreBrute = dataListeGenrePage1.results
 
-            let urlPageSuivante = dataListeGenrePage1.next
-            if (!dataListeGenrePage1.next) throw new Error('Erreur réseau - Impossible de changer de page');
+        let urlPageSuivante = dataListeGenrePage1.next
+        if (!dataListeGenrePage1.next) throw new Error('Erreur réseau - Impossible de changer de page');
 
-            while (urlPageSuivante) {
-                const reponseGenrePageSuivante = await fetch(urlPageSuivante)
-                if (!reponseGenrePageSuivante.ok) throw new Error("Erreur réseau - Impossible de changer de page")
-                const dataGenrePageSuivante = await reponseGenrePageSuivante.json();
+        while (urlPageSuivante) {
+            const reponseGenrePageSuivante = await fetch(urlPageSuivante)
+            if (!reponseGenrePageSuivante.ok) throw new Error("Erreur réseau - Impossible de changer de page")
+            const dataGenrePageSuivante = await reponseGenrePageSuivante.json();
 
-                listeGenreBrute = listeGenreBrute.concat(dataGenrePageSuivante.results)
-                urlPageSuivante = dataGenrePageSuivante.next
-            }
-
-            // Etape 2 : Filtrer pour enlever les filtres des catégories déjà affichés
-            const categoriesDejaAffiches = ["Mystery", "Animation"];
-            const listeGenre = listeGenreBrute.filter((genre) => {
-                return !categoriesDejaAffiches.includes(genre.name);
-            })
-
-            // Etape 3 : affichage dans le HTML
-            for (let index = 0; index < listeGenre.length; index++) {
-
-                const nouvelleOption = document.createElement("option");
-                nouvelleOption.value = listeGenre[index].name;
-                nouvelleOption.textContent = listeGenre[index].name;
-                document.getElementById("select-genres").appendChild(nouvelleOption);
-            }
-
-        } catch (error) {
-            console.error("Erreur Fetch :", error);
+            listeGenreBrute = listeGenreBrute.concat(dataGenrePageSuivante.results)
+            urlPageSuivante = dataGenrePageSuivante.next
         }
-    }
 
-    /**
-    * Charge une image dans un élément <img> et utilise une image par défaut si l'image est introuvable.
-    *
-    * @function chargerImage
-    * @param {HTMLImageElement} p_imageElement - Élément <img> dans lequel l'image sera chargée.
-    * @param {string} p_imageUrl - URL de l'image à charger.
-    * 
-    * Cette fonction tente de charger l'image spécifiée par p_imageUrl dans l'élément HTML donné.
-    * Si l'image échoue à se charger (erreur réseau, image absente, etc.), une image par défaut sera affichée à la place.
-    */
-    function chargerImage(p_imageElement, p_imageUrl) {
-        p_imageElement.src = p_imageUrl;
-        
-        p_imageElement.onerror = function() {
-            this.src = "images/image_non_trouvee.png"; // Image de remplacement en cas d'erreur
-        };
+        // Etape 2 : Filtrer pour enlever les filtres des catégories déjà affichés
+        const categoriesDejaAffiches = ["Mystery", "Animation"];
+        const listeGenre = listeGenreBrute.filter((genre) => {
+            return !categoriesDejaAffiches.includes(genre.name);
+        })
+
+        // Etape 3 : affichage dans le HTML
+        for (let index = 0; index < listeGenre.length; index++) {
+
+            const nouvelleOption = document.createElement("option");
+            nouvelleOption.value = listeGenre[index].name;
+            nouvelleOption.textContent = listeGenre[index].name;
+            document.getElementById("select-genres").appendChild(nouvelleOption);
+        }
+
+    } catch (error) {
+        console.error("Erreur Fetch :", error);
     }
-    
+}
+
+/**
+* Charge une image dans un élément <img> et utilise une image par défaut si l'image est introuvable.
+*
+* @function chargerImage
+* @param {HTMLImageElement} p_imageElement - Élément <img> dans lequel l'image sera chargée.
+* @param {string} p_imageUrl - URL de l'image à charger.
+* 
+* Cette fonction tente de charger l'image spécifiée par p_imageUrl dans l'élément HTML donné.
+* Si l'image échoue à se charger (erreur réseau, image absente, etc.), une image par défaut sera affichée à la place.
+*/
+function chargerImage(p_imageElement, p_imageUrl) {
+    p_imageElement.src = p_imageUrl;
+
+    p_imageElement.onerror = function () {
+        this.src = "images/image_non_trouvee.png"; // Image de remplacement en cas d'erreur
+    };
+}
+
 /**
  * Affiche une modale contenant les détails d'un film.
  *
@@ -215,7 +224,7 @@ async function afficherModale(p_url_film) {
         if (!reponseFilm.ok) throw new Error('Erreur réseau - détail film')
 
         const filmDetail = await reponseFilm.json();
-        
+
         // Afficher les infos dans la modale
         const template = document.getElementById("template-modale");
         const cloneTemplateDetail = template.content.cloneNode(true);
@@ -228,11 +237,43 @@ async function afficherModale(p_url_film) {
 
         cloneTemplateDetail.querySelector(".annee-film").innerText = filmDetail.year;
         cloneTemplateDetail.querySelector(".genre-film").innerText = filmDetail.genres;
-        cloneTemplateDetail.querySelector(".duree-film").innerText = filmDetail.duration + " minutes";
-        cloneTemplateDetail.querySelector(".score-film").innerText = "IMDB score : " + filmDetail.imdb_score;
+
+        // Affichage de la classification
+        if (filmDetail.rated !== "Not rated or unkown rating") {
+            if (!isNaN(filmDetail.rated)) {
+                cloneTemplateDetail.querySelector(".classification").innerText = "PG-" + filmDetail.rated + "  -";
+            } else {
+                cloneTemplateDetail.querySelector(".classification").innerText = filmDetail.rated + "  -";
+            }
+        } else {
+            cloneTemplateDetail.querySelector(".classification").innerText = "Non classé - ";
+        }
+
+        cloneTemplateDetail.querySelector(".duree-film").innerText = filmDetail.duration + " minutes   ";
+        cloneTemplateDetail.querySelector(".pays").innerText = "  (" + filmDetail.countries + ")";
+        cloneTemplateDetail.querySelector(".score-film").innerText = "IMDB score : " + filmDetail.imdb_score + "/10";
+        
+        // Préparation des données monnaitaires pour affichage
+        if (filmDetail.worldwide_gross_income !== null && filmDetail.budget_currency !== null) {
+            const devise = filmDetail.budget_currency
+            const symbols = {
+                "USD": "$",
+            };
+            const symbol = symbols[devise];
+
+            const recettes = filmDetail.worldwide_gross_income
+            const recettesFormatees = (recettes / 1_000_000).toFixed(1);
+            cloneTemplateDetail.querySelector(".recettes").innerText = "Recettes au box-office : " + symbol + recettesFormatees + "m";
+
+        } else {
+            cloneTemplateDetail.querySelector(".recettes").innerText = "Recettes au box-office non communiquées"
+        }
+
         cloneTemplateDetail.querySelector(".realisateur-film").innerText = filmDetail.directors;
         cloneTemplateDetail.querySelector(".description_longue-film").innerText = filmDetail.long_description;
         cloneTemplateDetail.querySelector(".acteurs_film").innerText = filmDetail.actors;
+
+        console.log(filmDetail.id)
 
         document.body.appendChild(cloneTemplateDetail);
 
