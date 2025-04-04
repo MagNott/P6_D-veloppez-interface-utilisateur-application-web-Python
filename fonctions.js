@@ -94,6 +94,7 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
         const section = document.getElementById(p_categorie);
         const template = document.getElementById("template-film");
         const grid = section.getElementsByClassName("contenu-films");
+        // grid est une liste d'un élément 
 
         for (let i = 0; i < listeFilms.length; i++) {
             const cloneTemplate = template.content.cloneNode(true);
@@ -102,7 +103,6 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             const urlfilm = film.url
             const reponseUrlFilm = await fetch(urlfilm);
             if (!reponseUrlFilm.ok) throw new Error('Erreur réseau - détail des film');
-
 
             cloneTemplate.querySelector(".titre-film").innerText = film.title;
 
@@ -121,8 +121,19 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             const imageElement = cloneTemplate.querySelector(".img-film");
             chargerImage(imageElement, film.image_url);
 
+            if (i === 0 || i === 1) {
+                cloneTemplate.querySelector("article").classList.add("block");
+            } else if (i === 2 || i === 3) {
+                cloneTemplate.querySelector("article").classList.add("hidden", "sm:block");
+
+            } else {
+                cloneTemplate.querySelector("article").classList.add("hidden", "lg:block");
+            }
+
+            // Comme grid est une liste avec un seul éléement il faut pointer l'index 0 pour obtenir la zone où mettre le template
             grid[0].appendChild(cloneTemplate);
         }
+        ajouterBoutonVoirPlus(grid[0]);
 
     } catch (error) {
         console.error("Erreur Fetch :", error);
@@ -252,7 +263,7 @@ async function afficherModale(p_url_film) {
         cloneTemplateDetail.querySelector(".duree-film").innerText = filmDetail.duration + " minutes   ";
         cloneTemplateDetail.querySelector(".pays").innerText = "  (" + filmDetail.countries + ")";
         cloneTemplateDetail.querySelector(".score-film").innerText = "IMDB score : " + filmDetail.imdb_score + "/10";
-        
+
         // Préparation des données monnaitaires pour affichage
         if (filmDetail.worldwide_gross_income !== null && filmDetail.budget_currency !== null) {
             const devise = filmDetail.budget_currency
@@ -288,4 +299,62 @@ async function afficherModale(p_url_film) {
     } catch (error) {
         console.error("Erreur Fetch :", error);
     }
+}
+
+/**
+ * Ajoute un bouton "Voir plus" dans un conteneur HTML, qui peut basculer en "Voir moins" au clic.
+ *
+ * Ce bouton permet d’afficher ou masquer dynamiquement les éléments <article> qui sont
+ * initialement cachés avec la classe Tailwind "hidden". Il est visible uniquement sur
+ * mobile et tablette grâce à la classe "lg:hidden".
+ *
+ * Si le conteneur contient peu d’articles :
+ * - Moins de 3 articles : le bouton est masqué même en mobile (classe "sm:hidden")
+ * - Moins de 5 articles : le bouton est masqué sur mobile ET tablette (classe "md:hidden")
+ *
+ * Fonctionnement du bouton :
+ * - En mode "Voir plus" :
+ *   • Affiche tous les articles cachés (supprime "hidden")
+ *   • Ajoute la classe "est_affiche" pour pouvoir les cibler ensuite
+ *   • Change le texte en "Voir moins"
+ *
+ * - En mode "Voir moins" :
+ *   • Cache uniquement les articles marqués "est_affiche"
+ *   • Réapplique "hidden" et retire "est_affiche"
+ *   • Remet le texte en "Voir plus"
+ *
+ * @param {HTMLElement} p_cloneTemplate - Le conteneur dans lequel le bouton est inséré
+ */
+function ajouterBoutonVoirPlus(p_cloneTemplate) {
+
+    // Si il n'y a pas assez de films, il ne faut pas afifcher le bouton 
+    const bouton = document.createElement("button");
+    bouton.innerText = "Voir plus";
+    bouton.classList.add("bouton-voir-plus", "bg-red-600", "block", "lg:hidden", "text-white", "m-4", "px-12", "py-3", "rounded-3xl", "hover:bg-red-700", "transition", "text-2xl");
+
+    if (p_cloneTemplate.querySelectorAll("article").length <= 2) {
+        bouton.classList.add("sm:hidden")
+    } else if (p_cloneTemplate.querySelectorAll("article").length <= 4){
+        bouton.classList.add("md:hidden")
+    }
+
+    bouton.addEventListener("click", () => {
+        if (bouton.innerText === "Voir plus") {
+            const articlesCaches = p_cloneTemplate.querySelectorAll("article.hidden");
+            articlesCaches.forEach(article => {
+                article.classList.remove("hidden"); 
+                article.classList.add("est_affiche"); 
+                bouton.innerText = "Voir moins"; 
+            });
+        } else {
+            const articlesAffiches = p_cloneTemplate.querySelectorAll("article.est_affiche");
+            articlesAffiches.forEach(article => {
+            article.classList.add("hidden"); 
+            article.classList.remove("est_affiche"); 
+            bouton.innerText = "Voir plus"; 
+        });
+    }
+});
+
+p_cloneTemplate.appendChild(bouton);
 }

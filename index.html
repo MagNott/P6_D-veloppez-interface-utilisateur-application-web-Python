@@ -9,12 +9,17 @@
   <script src="fonctions.js"></script>
   <script src="main.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      outline: 1px solid red !important;
+    }
+  </style>
 </head>
 
 <body>
   <header>
     <!-- <h1>JustStreamIt</h1> -->
-    <img class="max-w-screen-xl mx-auto" src="images/Banniere_JustStream_It.png">
+    <img class="w-full h-auto max-w-screen-xl mx-auto" src="images/Banniere_JustStream_It.png">
 
   </header>
   <main class="container max-w-screen-xl mx-auto">
@@ -64,7 +69,7 @@
 
     <!-- Template pour l'affichage de la section dynamique -->
     <template id="template-film">
-      <article class="film relative inline-block m-4">
+      <article class="film relative outline outline-red-500 m-4">
         <img class="img-film aspect-square object-cover w-full" src="" />
         <div
           class="absolute inset-x-0 top-[15%] h-2/4 bg-black bg-opacity-50 w-full h-40 flex flex-col justify-between">
@@ -83,14 +88,14 @@
 
     <!-- Le meilleur film -->
     <section class="container mx-auto" id="meilleur-film">
-      <h2 class="font-bold text-6xl my-9 mx-3">Meilleur film</h2>
-      <div class="flex items-center border-8 border-black p-6 m-5">
-        <img id="img-film" class="w-1/2 h-auto object-cover" src= />
-        <div class="flex flex-col ml-4">
-          <h3 class="font-bold text-6xl pl-5 m-4" id="titre-film"></h3>
-          <p class="pl-5 m-4 text-3xl" id="description_film"></p>
+      <h2 class="font-bold text-5xl md:text-6xl lg:text-6xl my-9 mx-3">Meilleur film</h2>
+      <div class="flex flex-col md:flex-row items-center border-8 border-black p-6 m-5">
+        <img id="img-film" class="w-full h-48 object-cover md:w-1/2 md:h-auto object-cover" src= />
+        <div class="flex flex-col">
+          <h3 class="font-bold text-4xl md:text-6xl lg:text-6xl lg:pl-6" id="titre-film"></h3>
+          <p class="text-2xl lg:text-3xl lg:pl-6" id="description_film"></p>
           <button
-            class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition self-end text-2xl">Détails</button>
+            class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition lg:self-end text-2xl">Détails</button>
         </div>
       </div>
 
@@ -99,7 +104,7 @@
     <!-- Section 1 : Films les mieux notés tous genres confondus -->
     <section class="container mx-auto" id="meilleures-notes">
       <h2 class="font-bold text-6xl my-9 mx-3">Films les mieux notés</h2>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
 
     </section>
@@ -107,7 +112,7 @@
     <!-- Section 2 : Mystery -->
     <section class="container mx-auto" id="mystery">
       <h2 class="font-bold text-6xl my-9 mx-3">Mystery</h2>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
 
     </section>
@@ -115,7 +120,7 @@
     <!-- Section 3 : Animation -->
     <section class="container mx-auto" id="animation">
       <h2 class="font-bold text-6xl my-9 mx-3">Animation</h2>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
 
     </section>
@@ -124,14 +129,14 @@
     <!-- SECTION DYNAMIQUE -->
 
     <section class="container mx-auto" id="categorie_autres">
-      <div class="flex items-center">
+      <div class="flex flex-col md:flex-row items-center">
         <h2 class="font-bold text-6xl my-9 mx-3">Autres : </h2>
         <label for="select-genres"></label>
         <select id="select-genres" class="font-bold text-2xl border border-black px-4 py-2 mt-4">
           <!-- Les <option> seront ajoutées en JS -->
         </select>
       </div>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="contenu-films">
+      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="contenu-films">
         <!-- Les films seront ajoutées en JS -->
       </div>
 
