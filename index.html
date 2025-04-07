@@ -9,11 +9,11 @@
   <script src="fonctions.js"></script>
   <script src="main.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
+  <!-- <style>
     * {
       outline: 1px solid red !important;
     }
-  </style>
+  </style> -->
 </head>
 
 <body>
@@ -118,7 +118,7 @@
     </section>
 
     <!-- Section 3 : Animation -->
-    <section class="container mx-auto" id="animation">
+    <section class="container mx-auto mb-8" id="animation">
       <h2 class="font-bold text-6xl my-9 mx-3">Animation</h2>
       <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
@@ -127,14 +127,29 @@
 
 
     <!-- SECTION DYNAMIQUE -->
-
     <section class="container mx-auto" id="categorie_autres">
       <div class="flex flex-col md:flex-row items-center">
-        <h2 class="font-bold text-6xl my-9 mx-3">Autres : </h2>
-        <label for="select-genres"></label>
-        <select id="select-genres" class="font-bold text-2xl border border-black px-4 py-2 mt-4">
-          <!-- Les <option> seront ajoutées en JS -->
-        </select>
+        <h2 class="font-bold text-6xl my-9 mx-3 mt-1">Autres : </h2>
+
+        <!-- Création d'une selct box personnalisée en div, bouton, ul et li pour pouvoir le styliser 
+         - La classe "relative" sur la div principale permet de positionner le ul en absolute
+         - Le bouton permet de réprésenter la partie cliquable
+         - Les "ul" représentent les option du select box
+         - Avec "hidden" on cache la liste des options (c'est js qui va gérer l'affichage)
+         - "z-10" fait référence au z-index et permet de controler l'affichage au dessus du reste
+         - "top-full" permet de coller au bouton
+        -->
+        <div class="relative w-[220px]">
+          <button id="bouton-select"
+            class="border border-black font-bold text-xl bg-white flex justify-between px-4 py-2 w-full">
+              <span id="texte-bouton">Choisir un genre</span>
+              <img src="images/fleche.png" alt="" class="w-4 h-4 ml-2 mt-2">
+          </button>
+          <ul id="select-genres"
+            class="options-list absolute top-full left-0 w-full bg-white border border-black hidden z-10">
+            <!-- Les <option> seront ajoutées en JS -->
+          </ul>
+        </div>
       </div>
       <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="contenu-films">
         <!-- Les films seront ajoutées en JS -->

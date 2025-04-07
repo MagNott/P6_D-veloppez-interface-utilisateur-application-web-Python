@@ -140,17 +140,25 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
     }
 }
 
-
 /**
- * Récupère dynamiquement tous les genres disponibles depuis l'API
- * (en parcourant les pages de résultats), filtre ceux déjà affichés,
- * puis les insère dans un menu déroulant (élément HTML <select>).
+ * Affiche dynamiquement une liste de genres dans une fausse select box personnalisée (en <ul> / <li>).
  *
- * Genres exclus de l'affichage : "Mystery", "Animation".
+ * Fonctionnement :
+ * - Récupère tous les genres depuis l’API (avec pagination si besoin)
+ * - Filtre pour exclure certains genres déjà affichés ailleurs (ex : "Mystery", "Animation")
+ * - Crée un élément <li> pour chaque genre et l’insère dans le <ul> ayant l’id "select-genres"
+ * - Ajoute des classes Tailwind pour le style visuel (bordures, gras, survol, etc.)
+ * - Gère le clic sur chaque <li> :
+ *    → Met à jour le texte du bouton (id="texte-bouton")
+ *    → Cache la liste déroulante
+ *    → Construit une URL avec le genre sélectionné
+ *    → Vide la section #contenu-films
+ *    → Affiche les films correspondant au genre choisi
+ *    → Ajoute une icône ✅ à l’option sélectionnée (et la retire des autres)
  *
- * @async
+ *@async
  * @function afficherGenres
- * @returns {Promise<void>} Ne retourne rien, mais insère dynamiquement des <option> dans le <select id="select-genres">
+ * @returns {Promise<void>} Ne retourne rien, mais insère dynamiquement des <li> dans le <ul id="select-genres">
  */
 async function afficherGenres() {
     try {
@@ -183,11 +191,46 @@ async function afficherGenres() {
         // Etape 3 : affichage dans le HTML
         for (let index = 0; index < listeGenre.length; index++) {
 
-            const nouvelleOption = document.createElement("option");
-            nouvelleOption.value = listeGenre[index].name;
+            // Creation de la nouvelle option (élément li) qui sera dans le ul qui représente le menu
+            const nouvelleOption = document.createElement("li");
+            nouvelleOption.dataset.value = listeGenre[index].name;
             nouvelleOption.textContent = listeGenre[index].name;
+
+            // Recupration du menu déroulant (ul) avec l'id pour pour ajouter chaque option (li)
             document.getElementById("select-genres").appendChild(nouvelleOption);
+
+            // Ajout des classes Tailwind pour mettre en forme les options (li)
+            nouvelleOption.classList.add("border-b", "border-black", "px-4", "py-2", "hover:bg-gray-100", "cursor-pointer", "font-bold", "text-xl")
+
+            // Ajout de l'évenement click sur l'option (li) pour la getion du choix d'une option
+            nouvelleOption.addEventListener("click", (event) => {
+
+                // Reinitialisation de la section des films affichés
+                document.getElementById("contenu-films").innerHTML = "";
+
+                // Récupération du genre cliqué d'une option (li)
+                const genreChoisi = event.target.dataset.value
+
+                // Met à jour le texte du bouton avec le genre choisi
+                document.getElementById("texte-bouton").innerText = genreChoisi;
+
+                // Cache la liste déroulante
+                document.getElementById("select-genres").classList.toggle("hidden");
+
+                // Supprime le ✅ de toutes les options avant d’en mettre un sur celle cliquée
+                const listeLi = document.getElementById("select-genres").querySelectorAll("li");
+                listeLi.forEach(li => {
+                    li.textContent = li.textContent.replace("✅","");
+                });
+                event.target.textContent += "  ✅";
+
+                // Construction de l'url pour le fetch de la catégorie
+                const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&sort_by=-imdb_score&page=1`;
+
+                afficherFilmsCategorie(urlPage1, "categorie_autres")
+              });
         }
+
 
     } catch (error) {
         console.error("Erreur Fetch :", error);
