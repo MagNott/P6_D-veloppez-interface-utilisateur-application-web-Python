@@ -6,14 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vidéos à la demande</title>
+  <link href="output.css" rel="stylesheet">
   <script src="fonctions.js"></script>
   <script src="main.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- <style>
-    * {
-      outline: 1px solid red !important;
-    }
-  </style> -->
+
 </head>
 
 <body>
@@ -69,14 +65,11 @@
 
     <!-- Template pour l'affichage de la section dynamique -->
     <template id="template-film">
-      <article class="film relative outline outline-red-500 m-4">
+      <article class="film relative m-4">
         <img class="img-film aspect-square object-cover w-full" src="" />
         <div
-          class="absolute inset-x-0 top-[15%] h-2/4 bg-black bg-opacity-50 w-full h-40 flex flex-col justify-between">
+          class="absolute inset-x-0 top-[15%] h-2/4 bg-black/50 w-full h-40 flex flex-col justify-between">
           <h3 class="titre-film font-bold text-3xl text-white ml-5"></h3>
-
-          <!-- <p class="description-film"></p> -->
-
           <button
             class="bouton-detail bg-gray-800 text-white px-5 py-3 rounded-3xl hover:bg-gray-500 transition self-end mr-2 mb-2 font-bold text-2xl"></button>
         </div>
