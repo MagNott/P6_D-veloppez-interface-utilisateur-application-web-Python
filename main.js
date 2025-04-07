@@ -16,19 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlFilmsAnimationPage1 = urlBaseTitre +  uriFilmsAnimationPage1
   afficherFilmsCategorie(urlFilmsAnimationPage1, "animation")
 
-  // Prépare une Selectbox avec tous les genres de film
+  // Prépare une Selectbox (en div, bouton, ul et li) avec tous les genres de film
   afficherGenres()
 
-  const selectBox = document.getElementById("select-genres")
+  // Ouvre ou ferme la liste au clic sur le bouton
+  document.getElementById("bouton-select").addEventListener("click", () => {
+    document.getElementById("select-genres").classList.toggle("hidden");
+});
 
-  selectBox.addEventListener("change", (event) => {
-    document.getElementById("contenu-films").innerHTML = "";
-    const genreChoisi = event.target.value
-
-    const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&sort_by=-imdb_score&page=1`;
-
-    afficherFilmsCategorie(urlPage1, "categorie_autres")
-
-  })
 
 });
