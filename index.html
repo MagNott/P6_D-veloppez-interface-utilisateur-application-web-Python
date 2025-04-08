@@ -13,12 +13,12 @@
 </head>
 
 <body>
-  <header>
-    <!-- <h1>JustStreamIt</h1> -->
-    <img class="w-full h-auto max-w-screen-xl mx-auto" src="images/Banniere_JustStream_It.png">
+  <header role="banner">
+    <img class="w-full h-auto max-w-screen-xl mx-auto" src="images/Banniere_JustStream_It.png"
+      alt="Bannière Just Stream It">
 
   </header>
-  <main class="container max-w-screen-xl mx-auto">
+  <main role="main" class="container max-w-screen-xl mx-auto">
 
     <!-- TEMPLATES -->
     <!-- Template pour l'affichage de la modale -->
@@ -27,7 +27,7 @@
         <article class="detail-film">
           <div class="flex">
             <div class="flex w-2/3 flex flex-col">
-              <h3 class="titre-film leading-relaxed font-bold text-6xl px-8"></h3>
+              <h3 id="titre-film-dialogue" class="titre-film leading-relaxed font-bold text-6xl px-8"></h3>
               <div class="flex">
                 <p class="annee-film font-bold text-3xl pl-8 pr-2"></p>
                 <p class="font-bold text-3xl">-</p>
@@ -51,12 +51,12 @@
             </div>
           </div>
           <div class="flex flex-col">
-            <p class="description_longue-film text-2xl p-4 m-5"></p>
+            <p id="contenu-film-dialogue" class="description-longue-film text-2xl p-4 m-5"></p>
             <div class="flex flex-col my-10">
               <p class="font-bold text-2xl px-8">Avec : </p>
-              <p class="acteurs_film text-xl px-8"></p>
+              <p class="acteurs-film text-xl px-8"></p>
             </div>
-            <button
+            <button aria-label="Fermer la fenêtre de détails du film"
               class="bg-red-600 text-white self-center text-xl px-20 py-2 my-5 rounded-3xl hover:bg-red-700 transition">Fermer</button>
           </div>
         </article>
@@ -67,8 +67,7 @@
     <template id="template-film">
       <article class="film relative m-4">
         <img class="img-film aspect-square object-cover w-full" src="" />
-        <div
-          class="absolute inset-x-0 top-[15%] h-2/4 bg-black/50 w-full h-40 flex flex-col justify-between">
+        <div class="absolute inset-x-0 top-[15%] h-2/4 bg-black/50 w-full h-40 flex flex-col justify-between">
           <h3 class="titre-film font-bold text-3xl text-white ml-5"></h3>
           <button
             class="bouton-detail bg-gray-800 text-white px-5 py-3 rounded-3xl hover:bg-gray-500 transition self-end mr-2 mb-2 font-bold text-2xl"></button>
@@ -80,22 +79,22 @@
     <!-- AFFICHAGE DES SECTIONS STATIQUES -->
 
     <!-- Le meilleur film -->
-    <section class="container mx-auto" id="meilleur-film">
+    <section aria-label="Le meilleur film" class="container mx-auto" id="meilleur-film">
       <h2 class="font-bold text-5xl md:text-6xl lg:text-6xl my-9 mx-3">Meilleur film</h2>
       <div class="flex flex-col md:flex-row items-center border-8 border-black p-6 m-5">
         <img id="img-film" class="w-full h-48 object-cover md:w-1/2 md:h-auto object-cover" src= />
         <div class="flex flex-col">
           <h3 class="font-bold text-4xl md:text-6xl lg:text-6xl lg:pl-6" id="titre-film"></h3>
-          <p class="text-2xl lg:text-3xl lg:pl-6" id="description_film"></p>
+          <p class="text-2xl lg:text-3xl lg:pl-6" id="description-film"></p>
           <button
-            class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition lg:self-end text-2xl">Détails</button>
+            aria-label="Voir les détails du film" class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition lg:self-end text-2xl">Détails</button>
         </div>
       </div>
 
     </section>
 
     <!-- Section 1 : Films les mieux notés tous genres confondus -->
-    <section class="container mx-auto" id="meilleures-notes">
+    <section aria-label="Les films les mieux notés" class="container mx-auto" id="meilleures-notes">
       <h2 class="font-bold text-6xl my-9 mx-3">Films les mieux notés</h2>
       <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
@@ -103,7 +102,7 @@
     </section>
 
     <!-- Section 2 : Mystery -->
-    <section class="container mx-auto" id="mystery">
+    <section aria-label="les meilleurs films de la catégorie Mystery" class="container mx-auto" id="mystery">
       <h2 class="font-bold text-6xl my-9 mx-3">Mystery</h2>
       <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
@@ -111,7 +110,7 @@
     </section>
 
     <!-- Section 3 : Animation -->
-    <section class="container mx-auto mb-8" id="animation">
+    <section aria-label="Les meilleurs films de la catégorie Animation" class="container mx-auto mb-8" id="animation">
       <h2 class="font-bold text-6xl my-9 mx-3">Animation</h2>
       <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       </div>
@@ -120,7 +119,7 @@
 
 
     <!-- SECTION DYNAMIQUE -->
-    <section class="container mx-auto" id="categorie_autres">
+    <section aria-label="Les meilleurs film d'une catégorie au choix" class="container mx-auto" id="categorie-autres">
       <div class="flex flex-col md:flex-row items-center">
         <h2 class="font-bold text-6xl my-9 mx-3 mt-1">Autres : </h2>
 
@@ -133,13 +132,13 @@
          - "top-full" permet de coller au bouton
         -->
         <div class="relative w-[220px]">
-          <button id="bouton-select"
+          <button id="bouton-select" aria-haspopup="listbox" aria-expended="false" aria-controls="select-genre" aria-labelledby="texte-bouton"
             class="border border-black font-bold text-xl bg-white flex justify-between px-4 py-2 w-full">
-              <span id="texte-bouton">Choisir un genre</span>
-              <img src="images/fleche.png" alt="" class="w-4 h-4 ml-2 mt-2">
+            <span id="texte-bouton">Choisir un genre</span>
+            <img src="images/fleche.png" alt="image de flèche vers le bas" class="w-4 h-4 ml-2 mt-2">
           </button>
-          <ul id="select-genres"
-            class="options-list absolute top-full left-0 w-full bg-white border border-black hidden z-10">
+          <ul id="select-genres" role="listbox" tabindex="-1"
+            class="absolute top-full left-0 w-full bg-white border border-black hidden z-10">
             <!-- Les <option> seront ajoutées en JS -->
           </ul>
         </div>
@@ -147,16 +146,12 @@
       <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="contenu-films">
         <!-- Les films seront ajoutées en JS -->
       </div>
-
     </section>
-
 
   </main>
 
   <footer>
-
   </footer>
 
 </body>
-
 </html>
