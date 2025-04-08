@@ -34,10 +34,10 @@ async function afficherMeilleurFilm() {
         // Étape 3 : affichage dans le HTML
         const elementTitre = document.getElementById("titre-film");
         const elementImage = document.getElementById("img-film");
-        const elementDescription = document.getElementById("description_film");
+        const elementDescription = document.getElementById("description-film");
 
         elementTitre.innerText = meilleurFilm.title;
-        elementImage.src = meilleurFilm.image_url;
+        chargerImage(elementImage, meilleurFilm.image_url, meilleurFilm.title);
         elementDescription.innerText = filmDetail.description;
 
         // Affichage modale
@@ -73,7 +73,6 @@ async function afficherMeilleurFilm() {
 async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
 
     try {
-
         // Etape 1 : récupérer la liste tirée et préparer les données
         const reponseFilmsPage1 = await fetch(p_urlPage1)
         if (!reponseFilmsPage1.ok) throw new Error('Erreur réseau - liste films de la page 1')
@@ -110,6 +109,8 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
             const boutonDetails = cloneTemplate.querySelector(".bouton-detail");
             boutonDetails.innerText = "Détails"
             boutonDetails.dataset.url = film.url
+            boutonDetails.setAttribute("aria-label", `Voir les détails du film ${film.title}`)
+
 
             // Ecoute de l'évenement click pour générer la modale
             boutonDetails.addEventListener("click", (event) => {
@@ -119,8 +120,9 @@ async function afficherFilmsCategorie(p_urlPage1, p_categorie) {
 
             // Gestion d'affichage de l'image si l'image de l'api renvoie une erreur 404
             const imageElement = cloneTemplate.querySelector(".img-film");
-            chargerImage(imageElement, film.image_url);
+            chargerImage(imageElement, film.image_url, film.title);
 
+            // Gestion du responsiv
             if (i === 0 || i === 1) {
                 cloneTemplate.querySelector("article").classList.add("block");
             } else if (i === 2 || i === 3) {
@@ -202,7 +204,16 @@ async function afficherGenres() {
             // Ajout des classes Tailwind pour mettre en forme les options (li)
             nouvelleOption.classList.add("border-b", "border-black", "px-4", "py-2", "hover:bg-gray-100", "cursor-pointer", "font-bold", "text-xl")
 
-            // Ajout de l'évenement click sur l'option (li) pour la getion du choix d'une option
+            // Accessibilité
+            nouvelleOption.setAttribute("role", "option");
+            nouvelleOption.setAttribute("tabindex", "0");
+            nouvelleOption.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  nouvelleOption.click(); // Simule un clic
+                }
+              });
+
+            // Ajout de l'évenement click sur l'option (li) pour la gestion du choix d'une option
             nouvelleOption.addEventListener("click", (event) => {
 
                 // Reinitialisation de la section des films affichés
@@ -210,24 +221,28 @@ async function afficherGenres() {
 
                 // Récupération du genre cliqué d'une option (li)
                 const genreChoisi = event.target.dataset.value
+                const bouton = document.getElementById("bouton-select");
 
                 // Met à jour le texte du bouton avec le genre choisi
                 document.getElementById("texte-bouton").innerText = genreChoisi;
 
                 // Cache la liste déroulante
                 document.getElementById("select-genres").classList.toggle("hidden");
+                bouton.setAttribute("aria-expanded", "false");
 
                 // Supprime le ✅ de toutes les options avant d’en mettre un sur celle cliquée
                 const listeLi = document.getElementById("select-genres").querySelectorAll("li");
                 listeLi.forEach(li => {
                     li.textContent = li.textContent.replace("✅","");
+                    li.removeAttribute("aria-selected");
                 });
                 event.target.textContent += "  ✅";
+                event.target.setAttribute("aria-selected", "true");
 
                 // Construction de l'url pour le fetch de la catégorie
                 const urlPage1 = urlBaseTitre + `?genre=${genreChoisi}&sort_by=-imdb_score&page=1`;
 
-                afficherFilmsCategorie(urlPage1, "categorie_autres")
+                afficherFilmsCategorie(urlPage1, "categorie-autres")
               });
         }
 
@@ -243,15 +258,19 @@ async function afficherGenres() {
 * @function chargerImage
 * @param {HTMLImageElement} p_imageElement - Élément <img> dans lequel l'image sera chargée.
 * @param {string} p_imageUrl - URL de l'image à charger.
+* @param {string} p_titreFilm - Titre du film, utilisé pour générer un texte alternatif pertinent.
 * 
 * Cette fonction tente de charger l'image spécifiée par p_imageUrl dans l'élément HTML donné.
 * Si l'image échoue à se charger (erreur réseau, image absente, etc.), une image par défaut sera affichée à la place.
+* Un texte alternatif est ajouté avec le titre du film pour décrire l'image chargée
 */
-function chargerImage(p_imageElement, p_imageUrl) {
+function chargerImage(p_imageElement, p_imageUrl, p_titreFilm) {
     p_imageElement.src = p_imageUrl;
+    p_imageElement.alt = `Affiche du film ${p_titreFilm}`;
 
     p_imageElement.onerror = function () {
         this.src = "images/image_non_trouvee.png"; // Image de remplacement en cas d'erreur
+        this.alt = `Affiche manquante pour le film ${p_titreFilm}`;
     };
 }
 
@@ -283,11 +302,20 @@ async function afficherModale(p_url_film) {
         const template = document.getElementById("template-modale");
         const cloneTemplateDetail = template.content.cloneNode(true);
 
+        // Accessibilité
+        const modaleElement = cloneTemplateDetail.querySelector(".modale")
+
+        modaleElement.setAttribute("role", "dialog");
+        modaleElement.setAttribute("aria-modal", "true")
+        modaleElement.setAttribute("aria-labelledby", "titre-film-dialogue");
+        modaleElement.setAttribute("aria-describedby", "contenu-film-dialogue");
+
+
         cloneTemplateDetail.querySelector(".titre-film").innerText = filmDetail.title;
 
         // Gestion d'affichage de l'image si l'image de l'api renvoie une erreur 404
         const imageElement = cloneTemplateDetail.querySelector(".img-film");
-        chargerImage(imageElement, filmDetail.image_url);
+        chargerImage(imageElement, filmDetail.image_url, filmDetail.title);
 
         cloneTemplateDetail.querySelector(".annee-film").innerText = filmDetail.year;
         cloneTemplateDetail.querySelector(".genre-film").innerText = filmDetail.genres;
@@ -324,18 +352,18 @@ async function afficherModale(p_url_film) {
         }
 
         cloneTemplateDetail.querySelector(".realisateur-film").innerText = filmDetail.directors;
-        cloneTemplateDetail.querySelector(".description_longue-film").innerText = filmDetail.long_description;
-        cloneTemplateDetail.querySelector(".acteurs_film").innerText = filmDetail.actors;
-
-        console.log(filmDetail.id)
+        cloneTemplateDetail.querySelector(".description-longue-film").innerText = filmDetail.long_description;
+        cloneTemplateDetail.querySelector(".acteurs-film").innerText = filmDetail.actors;
 
         document.body.appendChild(cloneTemplateDetail);
 
+        // Une fois la modale insérée dans le DOM ajout de l'événement fermeture et du focus sur le bouton
         const modale = document.querySelector(".modale"); // Cible directement l'article de la modale
-
         const boutonFermer = modale.querySelector("button");
+        boutonFermer.focus(); 
 
         boutonFermer.addEventListener("click", () => {
+            document.querySelector(".bouton-detail").focus();  // Permet de revenir au bouton qui a servi à ouvrir la modale
             modale.remove();
         });
 
