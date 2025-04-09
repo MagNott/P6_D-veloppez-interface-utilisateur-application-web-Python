@@ -1,136 +1,203 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vidéos à la demande</title>
+    <link href="output.css" rel="stylesheet" />
+    <script src="fonctions.js"></script>
+    <script src="main.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vidéos à la demande</title>
-  <link href="output.css" rel="stylesheet">
-  <script src="fonctions.js"></script>
-  <script src="main.js"></script>
+  <body>
+    <header role="banner">
+      <img
+        class="w-full h-auto max-w-screen-xl mx-auto"
+        src="images/Banniere_JustStream_It.png"
+        alt="Bannière Just Stream It"
+      />
+    </header>
+    <main role="main" class="container max-w-screen-xl mx-auto">
+      <!-- TEMPLATES -->
+      <!-- Template pour l'affichage de la modale -->
+      <template id="template-modale">
+        <div
+          class="modale fixed inset-0 z-50 bg-white border-8 border-black p-4 m-5 flex items-center justify-center overflow-y-auto max-h-screen"
+        >
+          <!-- Les classes tailwind max-w-8xl et w-full permettent de stabiliser l'utilisation de l'espace dans la modale, peu importe la quantité de contenu-->
+          <!-- Les classes overflow-y-auto et max-h-screen permettent de gérer le scroll dans la modale avec son contenu qui ne dépasse pas -->
+          <article
+            class="detail-film max-w-8xl w-full py-8 overflow-y-auto max-h-screen"
+          >
+            <img
+              src="images/croix.png"
+              alt="Fermer la fenêtre"
+              class="croix-fermer lg:hidden absolute top-4 right-4 w-8 h-8 cursor-pointer"
+            />
 
-</head>
-
-<body>
-  <header role="banner">
-    <img class="w-full h-auto max-w-screen-xl mx-auto" src="images/Banniere_JustStream_It.png"
-      alt="Bannière Just Stream It">
-
-  </header>
-  <main role="main" class="container max-w-screen-xl mx-auto">
-
-    <!-- TEMPLATES -->
-    <!-- Template pour l'affichage de la modale -->
-    <template id="template-modale">
-      <div class="modale fixed inset-0 z-50 bg-white border-8 border-black p-4 m-5 flex items-center justify-center overflow-y-auto max-h-screen">
-        <!-- Les classes tailwind max-w-8xl et w-full permettent de stabiliser l'utilisation de l'espace dans la modale, peu importe la quantité de contenu-->
-         <!-- Les classes overflow-y-auto et max-h-screen permettent de gérer le scroll dans la modale avec son contenu qui ne dépasse pas -->
-        <article class="detail-film max-w-8xl w-full py-8 overflow-y-auto max-h-screen">
-          <img src="images/croix.png" alt="Fermer la fenêtre"
-             class="croix-fermer lg:hidden absolute top-4 right-4 w-8 h-8 cursor-pointer" />
-
-          <div class="flex flex-col lg:flex-row flex-wrap">
-            <div class="order-1 lg:order-1 flex w-2/3 flex flex-col">
-              <h3 id="titre-film-dialogue" class="titre-film leading-relaxed font-bold text-4xl lg:text-6xl px-8"></h3>
-              <div class="flex">
-                <p class="annee-film font-bold text-2xl lg:text-3xl pl-8 pr-2"></p>
-                <p class="font-bold text-3xl">-</p>
-                <p class="genre-film font-bold text-2xl lg:text-3xl pl-2"></p>
+            <div class="flex flex-col lg:flex-row flex-wrap">
+              <div class="order-1 lg:order-1 flex w-2/3 flex flex-col">
+                <h3
+                  id="titre-film-dialogue"
+                  class="titre-film leading-relaxed font-bold text-4xl lg:text-6xl px-8"
+                ></h3>
+                <div class="flex">
+                  <p
+                    class="annee-film font-bold text-2xl lg:text-3xl pl-8 pr-2"
+                  ></p>
+                  <p class="font-bold text-3xl">-</p>
+                  <p class="genre-film font-bold text-2xl lg:text-3xl pl-2"></p>
+                </div>
+                <div class="flex">
+                  <p
+                    class="classification font-bold text-2xl lg:text-3xl pl-8"
+                  ></p>
+                  <p class="duree-film font-bold text-2xl lg:text-3xl pl-2"></p>
+                  <p class="pays font-bold text-2xl lg:text-3xl pl-2"></p>
+                </div>
+                <p class="score-film font-bold text-2xl lg:text-3xl px-8"></p>
+                <p class="recettes font-bold text-2xl lg:text-3xl px-8"></p>
+                <p class="monnaie font-bold text-2xl lg:text-3xl px-8"></p>
+                <div class="flex flex-col my-10">
+                  <p class="font-bold text-1xl lg:text-2xl px-8">
+                    Réalisé par :
+                  </p>
+                  <p class="realisateur-film text-1xl lg:text-2xl px-8"></p>
+                </div>
               </div>
-              <div class="flex">
-                <p class="classification font-bold text-2xl lg:text-3xl pl-8"></p>
-                <p class="duree-film font-bold text-2xl lg:text-3xl pl-2"></p>
-                <p class="pays font-bold text-2xl lg:text-3xl pl-2"></p>
+              <div
+                class="order-3 lg:order-2 w-full lg:w-1/3 flex justify-center items-center"
+              >
+                <img
+                  class="img-film mx-auto lg:ml-auto px-20 max-w-md w-full h-auto object-cover"
+                  src=""
+                />
               </div>
-              <p class="score-film font-bold text-2xl lg:text-3xl px-8"></p>
-              <p class="recettes font-bold text-2xl lg:text-3xl px-8"></p>
-              <p class="monnaie font-bold text-2xl lg:text-3xl px-8"></p>
-              <div class="flex flex-col my-10">
-                <p class="font-bold text-1xl lg:text-2xl px-8">Réalisé par : </p>
-                <p class="realisateur-film text-1xl lg:text-2xl px-8"></p>
+              <div class="order-2 lg:order-3 flex flex-col">
+                <p
+                  id="contenu-film-dialogue"
+                  class="description-longue-film text-1xl lg:text-2xl p-4 m-5"
+                ></p>
               </div>
-          </div>
-          <div class="order-3 lg:order-2 w-full lg:w-1/3 flex justify-center items-center">
-            <img class="img-film mx-auto lg:ml-auto px-20 max-w-md w-full h-auto object-cover" src="" />
-          </div>
-          <div class="order-2 lg:order-3 flex flex-col">
-            <p id="contenu-film-dialogue" class="description-longue-film text-1xl lg:text-2xl p-4 m-5"></p>
-          </div>
-          <div class="order-4 lg:order-4 flex flex-col my-10">
-            <p class="font-bold text-1xl lg:text-2xl px-8">Avec : </p>
-            <p class="acteurs-film text-l lg:text-xl px-8"></p>
-          </div>
-          <div class="order-5 lg:order-5 hidden lg:flex justify-center w-full ">
-            <button aria-label="Fermer la fenêtre de détails du film"
-              class="bg-red-600 text-white text-xl px-20 py-2 my-5 rounded-3xl hover:bg-red-700 transition">Fermer</button>
-          </div>
+              <div class="order-4 lg:order-4 flex flex-col my-10">
+                <p class="font-bold text-1xl lg:text-2xl px-8">Avec :</p>
+                <p class="acteurs-film text-l lg:text-xl px-8"></p>
+              </div>
+              <div
+                class="order-5 lg:order-5 hidden lg:flex justify-center w-full"
+              >
+                <button
+                  aria-label="Fermer la fenêtre de détails du film"
+                  class="bg-red-600 text-white text-xl px-20 py-2 my-5 rounded-3xl hover:bg-red-700 transition"
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </article>
         </div>
+      </template>
+
+      <!-- Template pour l'affichage de la section dynamique -->
+      <template id="template-film">
+        <article class="film relative m-4">
+          <img class="img-film aspect-square object-cover w-full" src="" />
+          <div
+            class="absolute inset-x-0 top-[15%] h-2/4 bg-black/50 w-full h-40 flex flex-col justify-between"
+          >
+            <h3 class="titre-film font-bold text-3xl text-white ml-5"></h3>
+            <button
+              class="bouton-detail bg-gray-800 text-white px-5 py-3 rounded-3xl hover:bg-gray-500 transition self-end mr-2 mb-2 font-bold text-2xl"
+            ></button>
+          </div>
         </article>
-      </div>
-    </template>
+      </template>
 
-    <!-- Template pour l'affichage de la section dynamique -->
-    <template id="template-film">
-      <article class="film relative m-4">
-        <img class="img-film aspect-square object-cover w-full" src="" />
-        <div class="absolute inset-x-0 top-[15%] h-2/4 bg-black/50 w-full h-40 flex flex-col justify-between">
-          <h3 class="titre-film font-bold text-3xl text-white ml-5"></h3>
-          <button
-            class="bouton-detail bg-gray-800 text-white px-5 py-3 rounded-3xl hover:bg-gray-500 transition self-end mr-2 mb-2 font-bold text-2xl"></button>
+      <!-- AFFICHAGE DES SECTIONS STATIQUES -->
+
+      <!-- Le meilleur film -->
+      <section
+        aria-label="Le meilleur film"
+        class="container mx-auto"
+        id="meilleur-film"
+      >
+        <h2 class="font-bold text-5xl md:text-6xl lg:text-6xl my-9 mx-3">
+          Meilleur film
+        </h2>
+        <div
+          class="flex flex-col md:flex-row items-center border-8 border-black p-6 m-5"
+        >
+          <img
+            id="img-film"
+            class="w-full h-48 object-cover md:w-1/2 md:h-auto object-cover"
+            src=""
+          />
+          <div class="flex flex-col">
+            <h3
+              class="font-bold text-4xl md:text-6xl lg:text-6xl sm:pl-4 lg:pl-6"
+              id="titre-film"
+            ></h3>
+            <p
+              class="text-2xl sm:pl-4 lg:text-3xl lg:pl-6"
+              id="description-film"
+            ></p>
+            <button
+              aria-label="Voir les détails du film"
+              class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition lg:self-end text-2xl"
+            >
+              Détails
+            </button>
+          </div>
         </div>
-      </article>
-    </template>
+      </section>
 
+      <!-- Section 1 : Films les mieux notés tous genres confondus -->
+      <section
+        aria-label="Les films les mieux notés"
+        class="container mx-auto"
+        id="meilleures-notes"
+      >
+        <h2 class="font-bold text-6xl my-9 mx-3">Films les mieux notés</h2>
+        <div
+          class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        ></div>
+      </section>
 
-    <!-- AFFICHAGE DES SECTIONS STATIQUES -->
+      <!-- Section 2 : Mystery -->
+      <section
+        aria-label="les meilleurs films de la catégorie Mystery"
+        class="container mx-auto"
+        id="mystery"
+      >
+        <h2 class="font-bold text-6xl my-9 mx-3">Mystery</h2>
+        <div
+          class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        ></div>
+      </section>
 
-    <!-- Le meilleur film -->
-    <section aria-label="Le meilleur film" class="container mx-auto" id="meilleur-film">
-      <h2 class="font-bold text-5xl md:text-6xl lg:text-6xl my-9 mx-3">Meilleur film</h2>
-      <div class="flex flex-col md:flex-row items-center border-8 border-black p-6 m-5">
-        <img id="img-film" class="w-full h-48 object-cover md:w-1/2 md:h-auto object-cover" src= />
-        <div class="flex flex-col">
-          <h3 class="font-bold text-4xl md:text-6xl lg:text-6xl sm:pl-4 lg:pl-6" id="titre-film"></h3>
-          <p class="text-2xl sm:pl-4 lg:text-3xl lg:pl-6" id="description-film"></p>
-          <button
-            aria-label="Voir les détails du film" class="bouton-detail bg-red-600 text-white m-4 px-12 py-3 rounded-3xl hover:bg-red-700 transition lg:self-end text-2xl">Détails</button>
-        </div>
-      </div>
+      <!-- Section 3 : Animation -->
+      <section
+        aria-label="Les meilleurs films de la catégorie Animation"
+        class="container mx-auto mb-8"
+        id="animation"
+      >
+        <h2 class="font-bold text-6xl my-9 mx-3">Animation</h2>
+        <div
+          class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        ></div>
+      </section>
 
-    </section>
+      <!-- SECTION DYNAMIQUE -->
+      <section
+        aria-label="Les meilleurs film d'une catégorie au choix"
+        class="container mx-auto"
+        id="categorie-autres"
+      >
+        <div class="flex flex-col md:flex-row items-center">
+          <h2 class="font-bold text-6xl my-9 mx-3 mt-1">Autres :</h2>
 
-    <!-- Section 1 : Films les mieux notés tous genres confondus -->
-    <section aria-label="Les films les mieux notés" class="container mx-auto" id="meilleures-notes">
-      <h2 class="font-bold text-6xl my-9 mx-3">Films les mieux notés</h2>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      </div>
-
-    </section>
-
-    <!-- Section 2 : Mystery -->
-    <section aria-label="les meilleurs films de la catégorie Mystery" class="container mx-auto" id="mystery">
-      <h2 class="font-bold text-6xl my-9 mx-3">Mystery</h2>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      </div>
-
-    </section>
-
-    <!-- Section 3 : Animation -->
-    <section aria-label="Les meilleurs films de la catégorie Animation" class="container mx-auto mb-8" id="animation">
-      <h2 class="font-bold text-6xl my-9 mx-3">Animation</h2>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      </div>
-
-    </section>
-
-
-    <!-- SECTION DYNAMIQUE -->
-    <section aria-label="Les meilleurs film d'une catégorie au choix" class="container mx-auto" id="categorie-autres">
-      <div class="flex flex-col md:flex-row items-center">
-        <h2 class="font-bold text-6xl my-9 mx-3 mt-1">Autres : </h2>
-
-        <!-- Création d'une selct box personnalisée en div, bouton, ul et li pour pouvoir le styliser 
+          <!-- Création d'une selct box personnalisée en div, bouton, ul et li pour pouvoir le styliser 
          - La classe "relative" sur la div principale permet de positionner le ul en absolute
          - Le bouton permet de réprésenter la partie cliquable
          - Les "ul" représentent les option du select box
@@ -138,27 +205,41 @@
          - "z-10" fait référence au z-index et permet de controler l'affichage au dessus du reste
          - "top-full" permet de coller au bouton
         -->
-        <div class="relative w-[220px]">
-          <button id="bouton-select" aria-haspopup="listbox" aria-expended="false" aria-controls="select-genre" aria-labelledby="texte-bouton"
-            class="border border-black font-bold text-xl bg-white flex justify-between px-4 py-2 w-full">
-            <span id="texte-bouton">Choisir un genre</span>
-            <img src="images/fleche.png" alt="image de flèche vers le bas" class="w-4 h-4 ml-2 mt-2">
-          </button>
-          <ul id="select-genres" role="listbox" tabindex="-1"
-            class="absolute top-full left-0 w-full bg-white border border-black hidden z-10">
-            <!-- Les <option> seront ajoutées en JS -->
-          </ul>
+          <div class="relative w-[220px]">
+            <button
+              id="bouton-select"
+              aria-haspopup="listbox"
+              aria-expended="false"
+              aria-controls="select-genre"
+              aria-labelledby="texte-bouton"
+              class="border border-black font-bold text-xl bg-white flex justify-between px-4 py-2 w-full"
+            >
+              <span id="texte-bouton">Choisir un genre</span>
+              <img
+                src="images/fleche.png"
+                alt="image de flèche vers le bas"
+                class="w-4 h-4 ml-2 mt-2"
+              />
+            </button>
+            <ul
+              id="select-genres"
+              role="listbox"
+              tabindex="-1"
+              class="absolute top-full left-0 w-full bg-white border border-black hidden z-10"
+            >
+              <!-- Les <option> seront ajoutées en JS -->
+            </ul>
+          </div>
         </div>
-      </div>
-      <div class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="contenu-films">
-        <!-- Les films seront ajoutées en JS -->
-      </div>
-    </section>
+        <div
+          class="contenu-films grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          id="contenu-films"
+        >
+          <!-- Les films seront ajoutées en JS -->
+        </div>
+      </section>
+    </main>
 
-  </main>
-
-  <footer>
-  </footer>
-
-</body>
+    <footer></footer>
+  </body>
 </html>
