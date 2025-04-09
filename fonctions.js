@@ -359,13 +359,23 @@ async function afficherModale(p_url_film) {
 
         // Une fois la modale insérée dans le DOM ajout de l'événement fermeture et du focus sur le bouton
         const modale = document.querySelector(".modale"); // Cible directement l'article de la modale
-        const boutonFermer = modale.querySelector("button");
+        const boutonFermer = modale.querySelector(" button");
+        const croixFermer = modale.querySelector(".croix-fermer")
+        document.body.classList.add("overflow-hidden");
         boutonFermer.focus(); 
 
         boutonFermer.addEventListener("click", () => {
             document.querySelector(".bouton-detail").focus();  // Permet de revenir au bouton qui a servi à ouvrir la modale
+            document.body.classList.remove("overflow-hidden");
             modale.remove();
         });
+
+        croixFermer.addEventListener("click", () => {
+            document.querySelector(".bouton-detail").focus();  // Permet de revenir au bouton qui a servi à ouvrir la modale
+            document.body.classList.remove("overflow-hidden");
+            modale.remove();
+        });
+
 
     } catch (error) {
         console.error("Erreur Fetch :", error);
@@ -398,10 +408,14 @@ async function afficherModale(p_url_film) {
  */
 function ajouterBoutonVoirPlus(p_cloneTemplate) {
 
+    // Ajout d'un conteneur pour le bouton afin de lui permettre d'être centré (sinon il est dans une grille)
+    const conteneurBouton = document.createElement("div");
+    conteneurBouton.classList.add("col-span-full", "flex", "justify-center");
+
     // Si il n'y a pas assez de films, il ne faut pas afifcher le bouton 
     const bouton = document.createElement("button");
     bouton.innerText = "Voir plus";
-    bouton.classList.add("bouton-voir-plus", "bg-red-600", "block", "lg:hidden", "text-white", "m-4", "px-12", "py-3", "rounded-3xl", "hover:bg-red-700", "transition", "text-2xl");
+    bouton.classList.add("bouton-voir-plus", "bg-red-600", "lg:hidden", "text-white", "m-4", "px-12", "py-3", "rounded-3xl", "hover:bg-red-700", "transition", "text-2xl");
 
     if (p_cloneTemplate.querySelectorAll("article").length <= 2) {
         bouton.classList.add("sm:hidden")
@@ -427,5 +441,6 @@ function ajouterBoutonVoirPlus(p_cloneTemplate) {
     }
 });
 
-p_cloneTemplate.appendChild(bouton);
+conteneurBouton.appendChild(bouton);
+p_cloneTemplate.appendChild(conteneurBouton);
 }
