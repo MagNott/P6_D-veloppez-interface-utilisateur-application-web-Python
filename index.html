@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
@@ -11,14 +11,14 @@
   </head>
 
   <body>
-    <header role="banner">
+    <header>
       <img
         class="w-full h-auto max-w-screen-xl mx-auto"
         src="images/Banniere_JustStream_It.png"
         alt="Bannière Just Stream It"
       />
     </header>
-    <main role="main" class="container max-w-screen-xl mx-auto">
+    <main class="container max-w-screen-xl mx-auto">
       <!-- TEMPLATES -->
       <!-- Template pour l'affichage de la modale -->
       <template id="template-modale">
@@ -28,7 +28,7 @@
           <!-- Les classes tailwind max-w-8xl et w-full permettent de stabiliser l'utilisation de l'espace dans la modale, peu importe la quantité de contenu-->
           <!-- Les classes overflow-y-auto et max-h-screen permettent de gérer le scroll dans la modale avec son contenu qui ne dépasse pas -->
           <article
-            class="detail-film max-w-8xl w-full py-8 overflow-y-auto max-h-screen"
+            class="detail-film max-w-8xl w-full py-8 max-h-screen"
           >
             <img
               src="images/croix.png"
@@ -210,7 +210,7 @@
               id="bouton-select"
               aria-haspopup="listbox"
               aria-expended="false"
-              aria-controls="select-genre"
+              aria-controls="select-genres"
               aria-labelledby="texte-bouton"
               class="border border-black font-bold text-xl bg-white flex justify-between px-4 py-2 w-full"
             >

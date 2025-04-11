@@ -7,7 +7,6 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-    --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
     --color-gray-100: oklch(96.7% 0.003 264.542);
@@ -17,15 +16,7 @@
     --color-white: #fff;
     --spacing: 0.25rem;
     --breakpoint-xl: 80rem;
-    --container-xs: 20rem;
-    --container-sm: 24rem;
     --container-md: 28rem;
-    --container-lg: 32rem;
-    --container-2xl: 42rem;
-    --container-3xl: 48rem;
-    --container-4xl: 56rem;
-    --container-5xl: 64rem;
-    --container-6xl: 72rem;
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
     --text-2xl: 1.5rem;
@@ -295,9 +286,6 @@
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
-  .mt-4 {
-    margin-top: calc(var(--spacing) * 4);
-  }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
@@ -313,9 +301,6 @@
   .ml-5 {
     margin-left: calc(var(--spacing) * 5);
   }
-  .ml-auto {
-    margin-left: auto;
-  }
   .block {
     display: block;
   }
@@ -328,14 +313,8 @@
   .hidden {
     display: none;
   }
-  .table {
-    display: table;
-  }
   .aspect-square {
     aspect-ratio: 1 / 1;
-  }
-  .h-2 {
-    height: calc(var(--spacing) * 2);
   }
   .h-2\/4 {
     height: calc(2/4 * 100%);
@@ -358,15 +337,6 @@
   .max-h-screen {
     max-height: 100vh;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
-  .w-1\/3 {
-    width: calc(1/3 * 100%);
-  }
-  .w-2 {
-    width: calc(var(--spacing) * 2);
-  }
   .w-2\/3 {
     width: calc(2/3 * 100%);
   }
@@ -388,14 +358,8 @@
   .max-w-screen-xl {
     max-width: var(--breakpoint-xl);
   }
-  .border-collapse {
-    border-collapse: collapse;
-  }
   .cursor-pointer {
     cursor: pointer;
-  }
-  .resize {
-    resize: both;
   }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -417,9 +381,6 @@
   }
   .gap-4 {
     gap: calc(var(--spacing) * 4);
-  }
-  .self-center {
-    align-self: center;
   }
   .self-end {
     align-self: flex-end;
@@ -447,9 +408,6 @@
   }
   .border-black {
     border-color: var(--color-black);
-  }
-  .bg-black {
-    background-color: var(--color-black);
   }
   .bg-black\/50 {
     background-color: color-mix(in srgb, #000 50%, transparent);
@@ -495,9 +453,6 @@
   }
   .py-3 {
     padding-block: calc(var(--spacing) * 3);
-  }
-  .py-6 {
-    padding-block: calc(var(--spacing) * 6);
   }
   .py-8 {
     padding-block: calc(var(--spacing) * 8);
@@ -545,13 +500,6 @@
   }
   .text-white {
     color: var(--color-white);
-  }
-  .underline {
-    text-decoration-line: underline;
-  }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
   }
   .transition {
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter;
@@ -733,18 +681,12 @@
   syntax: "*";
   inherits: false;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
       --tw-border-style: solid;
       --tw-leading: initial;
       --tw-font-weight: initial;
-      --tw-outline-style: solid;
     }
   }
 }
